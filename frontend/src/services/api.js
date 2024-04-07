@@ -29,12 +29,13 @@ export async function apiLogin(email, password) {
     return response.data;
 }
 
-export async function apiRegister(email, fullName, password, passwordRepeat) {
+export async function apiRegister(email, fullName, password, passwordRepeat, role) {
     const response = await noAuthInstance.post("/auth/register/", {
         fullName,
         username: email,
         password,
-        passwordRepeat
+        passwordRepeat,
+        role
     }).catch(defaultApiExceptionHandler);
 
     return response.data;
