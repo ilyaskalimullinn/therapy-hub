@@ -4,7 +4,7 @@ import { mapState } from "pinia";
 </script>
 
 <template>
-    <main>
+    <MainLayout>
         <h1>Profile</h1>
 
         <h2>{{this.user.fullName}}</h2>
@@ -21,10 +21,11 @@ import { mapState } from "pinia";
                 </li>
             </ul>
         </div>
-    </main>
+    </MainLayout>
 </template>
 
 <script>
+import MainLayout from "../components/blocks/MainLayout.vue";
 
 export default {
     name: "ProfileView",

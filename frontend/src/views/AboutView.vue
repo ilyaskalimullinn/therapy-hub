@@ -1,15 +1,17 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <MainLayout>
+    <div class="about">
+      <h1>This is an about page</h1>
+    </div>
+  </MainLayout>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+
+<script>
+import MainLayout from "../components/blocks/MainLayout.vue";
+
+export default {
+  name: "AboutView",
+  components: {MainLayout}
 }
-</style>
+</script>

@@ -3,9 +3,18 @@ import RegistrationForm from "../components/forms/RegistrationForm.vue";
 </script>
 
 <template>
-    <main>
+    <MainLayout>
         <h1>Registration</h1>
 
         <RegistrationForm />
-    </main>
+    </MainLayout>
 </template>
+
+<script>
+import MainLayout from "../components/blocks/MainLayout.vue";
+
+export default {
+    name: "RegistrationView",
+    components: { MainLayout }
+}
+</script>
