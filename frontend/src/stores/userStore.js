@@ -68,6 +68,12 @@ export const useUserStore = defineStore('userStore', {
     getters: {
         isAuthenticated(state) {
             return state.user !== null;
+        },
+        prettyRole(state) {
+            if (state.user.role === "specialist") {
+                return "Специалист"
+            }
+            return "Клиент"
         }
     }
 })

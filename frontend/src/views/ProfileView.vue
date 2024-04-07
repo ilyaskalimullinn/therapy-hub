@@ -7,7 +7,20 @@ import { mapState } from "pinia";
     <main>
         <h1>Profile</h1>
 
-        
+        <h2>{{this.user.fullName}}</h2>
+        <h2>{{ this.user.username }}</h2>
+
+        <h2>{{ this.rolePretty }}</h2>
+
+
+        <div v-if="this.user.role === 'specialist'">
+            <h2>Специальность</h2>
+            <ul>
+                <li v-for="specialty in this.user.specialtyList" :key="specialty.id">
+                    {{ specialty.name }}
+                </li>
+            </ul>
+        </div>
     </main>
 </template>
 
@@ -15,15 +28,11 @@ import { mapState } from "pinia";
 
 export default {
     name: "ProfileView",
-    data() {
-        return {
-
-        }
-    },
     computed: {
         ...mapState(useUserStore, {
             error: (state) => state.requestData.error,
-            user: 'user',
+            user: 'user', 
+            rolePretty: 'rolePretty',
         })
     },
 }
