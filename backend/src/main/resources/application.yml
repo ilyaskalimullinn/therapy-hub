@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: "jdbc:postgresql://localhost:5432/therapy_db"
+    username: postgres
+    password:
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+
+jwt:
+  secret: secret-key
+  lifetime: 60m
