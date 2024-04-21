@@ -1,5 +1,6 @@
 package ru.itis.therapy.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchSpecialistFilterParams {
     private SearchSpecialistPriceFilter price;
-    private SearchSpecialistRatingFilter rating;
+    private Double minRating;
     private List<Long> specialityList;
 }

@@ -46,6 +46,9 @@ public class User {
     @Column(name = "specialist_appointment_price")
     private Integer specialistAppointmentPrice;
 
+    @Column(name = "specialist_avg_rating")
+    private Double specialistAvgRating;
+
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Review> clientReviews;

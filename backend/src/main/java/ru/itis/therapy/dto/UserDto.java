@@ -30,6 +30,8 @@ public class UserDto {
 
     private Integer specialistAppointmentPrice;
 
+    private Double specialistAvgRating;
+
     private List<Review> clientReviews;
 
     private List<Review> specialistReviews;
