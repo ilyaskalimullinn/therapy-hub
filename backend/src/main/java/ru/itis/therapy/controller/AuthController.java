@@ -65,6 +65,8 @@ public class AuthController {
 
                 userDetailsResponse.setSpecialistRating(Double.parseDouble(new DecimalFormat("0.00").format(rating)));
             }
+
+            userDetailsResponse.setSpecialistRating(user.getSpecialistAvgRating());
             userDetailsResponse.setSpecialistAppointmentPrice(user.getSpecialistAppointmentPrice());
             userDetailsResponse.setSpecialtyList(user.getSpecialityList());
         }

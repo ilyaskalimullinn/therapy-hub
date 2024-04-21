@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
                 .role(user.getRole())
                 .specialistBio(user.getSpecialistBio())
                 .specialistAppointmentPrice(user.getSpecialistAppointmentPrice())
+                .specialistAvgRating(user.getSpecialistAvgRating())
                 .clientReviews(user.getClientReviews())
                 .specialistReviews(user.getSpecialistReviews())
                 .specialityList(user.getSpecialityList())
