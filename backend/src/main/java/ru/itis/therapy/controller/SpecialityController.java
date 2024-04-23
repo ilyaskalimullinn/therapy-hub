@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/speciality")
+@RequestMapping("${api.uri}/speciality")
 public class SpecialityController {
 
     private final SpecialityService specialityService;

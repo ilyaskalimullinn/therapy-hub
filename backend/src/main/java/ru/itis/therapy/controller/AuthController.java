@@ -21,7 +21,7 @@ import ru.itis.therapy.service.UserService;
 import java.text.DecimalFormat;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("${api.uri}/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;

@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/specialist")
+@RequestMapping("${api.uri}/specialist")
 public class SpecialistController {
 
     private final SpecialistService specialistService;
