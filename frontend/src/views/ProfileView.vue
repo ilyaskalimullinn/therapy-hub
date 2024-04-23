@@ -7,16 +7,16 @@ import { mapState } from "pinia";
     <MainLayout>
         <h1>Profile</h1>
 
-        <h2>{{this.user.fullName}}</h2>
-        <h2>{{ this.user.username }}</h2>
+        <h2>{{ user.fullName}}</h2>
+        <h2>{{ user.username }}</h2>
 
-        <h2>{{ this.rolePretty }}</h2>
+        <h2>{{ rolePretty }}</h2>
 
 
-        <div v-if="this.user.role === 'specialist'">
-            <h2>Специальность</h2>
+        <div v-if="user.role === 'SPECIALIST'">
+            <h2>Специальности:</h2>
             <ul>
-                <li v-for="specialty in this.user.specialtyList" :key="specialty.id">
+                <li v-for="specialty in user.specialtyList" :key="specialty.id">
                     {{ specialty.name }}
                 </li>
             </ul>

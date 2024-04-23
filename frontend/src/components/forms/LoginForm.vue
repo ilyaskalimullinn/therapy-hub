@@ -25,6 +25,7 @@ import { email, maxLength, minLength, required, helpers } from "@vuelidate/valid
 import { useUserStore } from "../../stores/userStore.js";
 import { mapActions, mapState } from "pinia";
 import FormSubmit from "./FormSubmit.vue";
+import { LoginDto } from "../../models/dto.js";
 
 
 export default {
@@ -68,7 +69,8 @@ export default {
             if (this.v$.form.$error) {
                 return;
             }
-            await this.login(this.form.email, this.form.password);
+            let loginDto = new LoginDto(this.form.email, this.form.password);
+            await this.login(loginDto);
             if (!this.error) {
                 this.$router.push({ name: 'Home' });
             }

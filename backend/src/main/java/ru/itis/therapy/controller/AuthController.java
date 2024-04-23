@@ -36,6 +36,25 @@ public class AuthController {
                 .role(registerRequest.getRole())
                 .build();
 
+        UserDto user = userService.getByEmail(registerRequest.getEmail());
+        
+        if (user.getRole().equals(User.UserRole.SPECIALIST)) {
+                userDetailsResponse.setSpecialistBio(user.getSpecialistBio());
+
+                if (!user.getSpecialistReviews().isEmpty()) {
+                        Double rating = (double) user.getSpecialistReviews().stream()
+                                        .map(Review::getRating)
+                                        .reduce(0, Integer::sum) / user.getSpecialistReviews().size();
+
+                        userDetailsResponse.setSpecialistRating(
+                                        Double.parseDouble(new DecimalFormat("0.00").format(rating)));
+                }
+
+                userDetailsResponse.setSpecialistRating(user.getSpecialistAvgRating());
+                userDetailsResponse.setSpecialistAppointmentPrice(user.getSpecialistAppointmentPrice());
+                userDetailsResponse.setSpecialtyList(user.getSpecialityList());
+        }        
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(RegisterResponse.builder()
                         .token(token)

@@ -15,11 +15,11 @@
 
             <div>
                 <div>
-                    <input type="radio" name="role" id="role-client" value="client" v-model="this.form.role" checked>
+                    <input type="radio" name="role" id="role-client" value="CLIENT" v-model="this.form.role" checked>
                     <label for="role-client">Client</label>
                 </div>
                 <div>
-                    <input type="radio" name="role" id="role-specialist" value="specialist" v-model="this.form.role">
+                    <input type="radio" name="role" id="role-specialist" value="SPECIALIST" v-model="this.form.role">
                     <label for="role-specialist">Specialist</label>
                 </div>
             </div>
@@ -43,6 +43,7 @@ import useVuelidate from "@vuelidate/core";
 import { email, helpers, maxLength, minLength, required } from "@vuelidate/validators";
 import { mapActions, mapState } from "pinia";
 import { useUserStore } from "../../stores/userStore.js";
+import { RegistrationDto } from "../../models/dto.js";
 
 export default {
     name: "RegistrationForm",
@@ -101,11 +102,16 @@ export default {
             if (this.v$.form.$error) {
                 return;
             }
-            await this.register(this.form.email,
+
+            let registrationDto = new RegistrationDto(
+                this.form.email,
                 this.form.fullName,
                 this.form.password,
                 this.form.passwordRepeat,
-                this.form.role);
+                this.form.role
+            );
+
+            await this.register(registrationDto);
             if (!this.error) {
                 this.$router.push({ name: 'Home' });
             }
