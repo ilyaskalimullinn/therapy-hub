@@ -12,6 +12,17 @@
 
             <FormField name="passwordRepeat" v-model="this.form.passwordRepeat" :errors="v$.form.passwordRepeat.$errors"
                 label="Password again" type="password" required />
+
+            <div>
+                <div>
+                    <input type="radio" name="role" id="role-client" value="client" v-model="this.form.role" checked>
+                    <label for="role-client">Client</label>
+                </div>
+                <div>
+                    <input type="radio" name="role" id="role-specialist" value="specialist" v-model="this.form.role">
+                    <label for="role-specialist">Specialist</label>
+                </div>
+            </div>
         </template>
         <template v-slot:submit-button>
             <FormSubmit value="Sign up" />
@@ -47,7 +58,8 @@ export default {
                 email: "",
                 fullName: "",
                 password: "",
-                passwordRepeat: ""
+                passwordRepeat: "",
+                role: ""
             }
         }
     },
@@ -75,6 +87,9 @@ export default {
                 },
                 passwordRepeat: {
                     sameAsPassword: helpers.withMessage("Must be the same as password", (v) => v === this.form.password)
+                },
+                role: {
+                    required: helpers.withMessage("This field is required", required),
                 }
             }
         }
@@ -89,7 +104,8 @@ export default {
             await this.register(this.form.email,
                 this.form.fullName,
                 this.form.password,
-                this.form.passwordRepeat);
+                this.form.passwordRepeat,
+                this.form.role);
             if (!this.error) {
                 this.$router.push({ name: 'Home' });
             }

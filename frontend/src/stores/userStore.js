@@ -34,12 +34,12 @@ export const useUserStore = defineStore('userStore', {
 
             this.loading = false;
         },
-        async register(email, fullName, password, passwordRepeat) {
+        async register(email, fullName, password, passwordRepeat, role) {
             this.loading = true;
             this.clearError();
 
             try {
-                const data = await apiRegister(email, fullName, password, passwordRepeat);
+                const data = await apiRegister(email, fullName, password, passwordRepeat, role);
                 storeTokenInStorage(data["token"]);
                 this.token = data["token"];
                 this.setUser(data["user"]);
@@ -68,6 +68,12 @@ export const useUserStore = defineStore('userStore', {
     getters: {
         isAuthenticated(state) {
             return state.user !== null;
+        },
+        prettyRole(state) {
+            if (state.user.role === "specialist") {
+                return "Специалист"
+            }
+            return "Клиент"
         }
     }
 })
