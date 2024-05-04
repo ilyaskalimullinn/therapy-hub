@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -38,11 +39,25 @@ public class SpecialistRepository {
         String template = "select distinct a.id as id, a.specialist_appointment_price as specialist_appointment_price, a.specialist_avg_rating as specialist_avg_rating from account a";
 
         if (request.getFilterParams() != null) {
-            if (request.getFilterParams().getSpecialityList() != null && !request.getFilterParams().getSpecialityList().isEmpty()) {
-                template += " join user_speciality us on a.id = user_id where us.speciality_id in " + request.getFilterParams().getSpecialityList();
+            boolean hasWhere = false;
+            if (request.getFilterParams().getSpecialityList() != null
+                    && !request.getFilterParams().getSpecialityList().isEmpty()) {
+                String specialtyListString = request.getFilterParams().getSpecialityList().stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(","));
+                template += " join user_speciality us on a.id = user_id where us.speciality_id in ("
+                        + specialtyListString
+                        + ")";
+                hasWhere = true;
             }
 
-            template += " where";
+            if (!hasWhere) {
+                template += " where";
+                hasWhere = true;
+            } else {
+                template += " and";
+            }
+            
 
             if (request.getFilterParams().getPrice() != null) {
                 Integer minPrice = request.getFilterParams().getPrice().getMinPrice();

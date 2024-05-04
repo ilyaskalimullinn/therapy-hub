@@ -32,4 +32,23 @@ class LoginDto {
     }
 }
 
-export { RegistrationDto, LoginDto };
+
+class SearchFilterDto {
+    constructor() {
+        this.searchString = "";
+        this.filterParams = {
+            price: {
+                max: null,
+                min: null
+            },
+            minRating: null,
+            specialityList: []
+        };
+        this.order = {
+            by: "rating",
+            type: "descending"
+        };
+    }
+}
+
+export { RegistrationDto, LoginDto, SearchFilterDto };

@@ -28,7 +28,7 @@ export async function apiLogin(loginDto) {
 
     let token = response.data["token"];
     let user = User.fromMap(response.data["user"]);
-    return {user, token};
+    return { user, token };
 }
 
 export async function apiRegister(registrationDto) {
@@ -39,6 +39,19 @@ export async function apiRegister(registrationDto) {
     let token = response.data["token"];
     let user = User.fromMap(response.data["user"]);
     return { user, token };
+}
+
+export async function apiFetchSpecialtyList() {
+    const response = await instance.get("/speciality").catch(defaultApiExceptionHandler);
+
+    const specialtyList = response.data;
+    return specialtyList;
+}
+
+export async function apiFetchSpecialists(searchFilterDto) {
+    const response = await instance.post("/specialist/find", searchFilterDto).catch(defaultApiExceptionHandler);
+    // console.log(response.data);
+    return response.data;
 }
 
 function defaultApiExceptionHandler(error) {
