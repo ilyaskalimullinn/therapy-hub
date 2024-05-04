@@ -34,6 +34,11 @@ export default {
                     authRequired: true
                 },
                 {
+                    name: "SpecialistSearch",
+                    text: "Find specialist",
+                    authRequired: true,
+                },
+                {
                     name: "Login",
                     text: "Sign in",
                     guestRequired: true,
