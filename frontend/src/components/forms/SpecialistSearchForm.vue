@@ -73,6 +73,19 @@
 
         </div>
 
+        <div class="specialty">
+            <DefaultLoader v-if="specialtyListRequestData.loading" />
+            <div class="error" v-else-if="specialtyListRequestData.error !== null">
+                {{ specialtyListRequestData.error.getMessage() }}
+            </div>
+            <div class="specialtyList" v-else>
+                <div class="specialty" v-for="specialty in specialtyList" v-bind:key="specialty.id">
+                    <label :for="`specialty-${specialty.id}`">{{ specialty.name }}</label>
+                    <input type="checkbox" name="specialtyList" :value="specialty.id" v-model="form.filterParams.specialtyList" :id="`specialty-${specialty.id}`">
+                </div>
+            </div>
+        </div>
+
         <input type="submit" value="Search">
     </form>
 
@@ -80,14 +93,22 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
+import DefaultLoader from "../utils/DefaultLoader.vue";
 import { SearchFilterDto } from "../../models/dto.js";
+import { useSpecialtyStore } from "../../stores/specialtyStore.js";
+import { mapActions, mapState } from "pinia";
 
 export default {
     name: "SpecialistSearchForm",
+    components: {DefaultLoader},
     methods: {
         async submit() {
             console.log(this.form);
-        }
+        },
+        ...mapActions(useSpecialtyStore, ["ensureLoaded"])
+    },
+    async beforeMount() {
+        this.ensureLoaded();
     },
     setup() {
         return {
@@ -98,6 +119,12 @@ export default {
         return {
             form: new SearchFilterDto()
         }
+    },
+    computed: {
+        ...mapState(useSpecialtyStore, {
+            specialtyListRequestData: (state) => state.requestData,
+            specialtyList: (state) => state.specialtyList,
+        })
     },
 }
 </script>

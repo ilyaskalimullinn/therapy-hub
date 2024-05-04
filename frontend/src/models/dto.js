@@ -49,7 +49,7 @@ class SearchFilterDto {
         this.order = {
             by: "rating",
             type: "descending"
-        }
+        };
     }
 }
 

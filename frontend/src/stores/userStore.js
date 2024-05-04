@@ -26,7 +26,7 @@ export const useUserStore = defineStore('userStore', {
                 this.token = token;
                 this.setUser(user);
             } catch (error) {
-                this.setError(error);
+                this.requestData.setError(error);
             }
 
             this.requestData.stopLoading();

@@ -41,6 +41,13 @@ export async function apiRegister(registrationDto) {
     return { user, token };
 }
 
+export async function apiFetchSpecialtyList() {
+    const response = await instance.get("/speciality").catch(defaultApiExceptionHandler);
+
+    const specialtyList = response.data;
+    return specialtyList;
+}
+
 function defaultApiExceptionHandler(error) {
     if (error.response) {
         console.error(error.response);
