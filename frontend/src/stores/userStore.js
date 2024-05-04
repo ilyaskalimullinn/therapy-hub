@@ -8,56 +8,46 @@ import {
     storeTokenInStorage,
     storeUserInStorage
 } from "../services/localData.js";
+import { RequestData } from "@/models/util.js";
 
 export const useUserStore = defineStore('userStore', {
     state: () => ({
         token: getTokenFromStorage(),
         user: getUserFromStorage(),
-        requestData: {
-            loading: false,
-            error: null
-        }
+        requestData: new RequestData(false, null),
     }),
     actions: {
-        async login(email, password) {
-            this.loading = true;
-            this.clearError();
+        async login(loginDto) {
+            this.requestData.startLoading();
 
             try {
-                const data = await apiLogin(email, password);
-                storeTokenInStorage(data["token"]);
-                this.token = data["token"];
-                this.setUser(data["user"]);
+                let { user, token } = await apiLogin(loginDto);
+                storeTokenInStorage(token);
+                this.token = token;
+                this.setUser(user);
             } catch (error) {
                 this.setError(error);
             }
 
-            this.loading = false;
+            this.requestData.stopLoading();
         },
-        async register(email, fullName, password, passwordRepeat, role) {
-            this.loading = true;
-            this.clearError();
+        async register(registrationDto) {
+            this.requestData.startLoading();
 
             try {
-                const data = await apiRegister(email, fullName, password, passwordRepeat, role);
-                storeTokenInStorage(data["token"]);
-                this.token = data["token"];
-                this.setUser(data["user"]);
+                let {user, token} = await apiRegister(registrationDto);
+                storeTokenInStorage(token);
+                this.token = token;
+                this.setUser(user);
             } catch (error) {
                 this.setError(error);
             }
 
-            this.loading = false;
+            this.requestData.stopLoading();
         },
         setUser(user) {
             this.user = user;
             storeUserInStorage(user);
-        },
-        setError(error) {
-            this.requestData.error = error
-        },
-        clearError() {
-            this.requestData.error = null
         },
         logout() {
             clearUserInStorage();
@@ -70,7 +60,7 @@ export const useUserStore = defineStore('userStore', {
             return state.user !== null;
         },
         prettyRole(state) {
-            if (state.user.role === "specialist") {
+            if (state.user.role === "SPECIALIST") {
                 return "Специалист"
             }
             return "Клиент"

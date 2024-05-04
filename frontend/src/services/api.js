@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { API_URL } from "./consts.js";
 import { useUserStore } from "../stores/userStore.js";
+import { User } from '@/models/base.js';
 
 const instance = axios.create({
     baseURL: API_URL
@@ -20,25 +21,24 @@ instance.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-export async function apiLogin(email, password) {
-    const response = await noAuthInstance.post("/auth/login/", {
-        username: email,
-        password
-    }).catch(defaultApiExceptionHandler);
+export async function apiLogin(loginDto) {
+    const response = await noAuthInstance
+        .post("/auth/login/", loginDto.toRepresentation())
+        .catch(defaultApiExceptionHandler);
 
-    return response.data;
+    let token = response.data["token"];
+    let user = User.fromMap(response.data["user"]);
+    return {user, token};
 }
 
-export async function apiRegister(email, fullName, password, passwordRepeat, role) {
-    const response = await noAuthInstance.post("/auth/register/", {
-        fullName,
-        username: email,
-        password,
-        passwordRepeat,
-        role
-    }).catch(defaultApiExceptionHandler);
+export async function apiRegister(registrationDto) {
+    const response = await noAuthInstance
+        .post("/auth/register/", registrationDto.toRepresentation())
+        .catch(defaultApiExceptionHandler);
 
-    return response.data;
+    let token = response.data["token"];
+    let user = User.fromMap(response.data["user"]);
+    return { user, token };
 }
 
 function defaultApiExceptionHandler(error) {

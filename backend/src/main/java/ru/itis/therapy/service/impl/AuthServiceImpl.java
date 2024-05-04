@@ -34,10 +34,14 @@ public class AuthServiceImpl implements AuthService {
             throw new PasswordsNotMatchException("Passwords do not match");
         }
 
+        String[] fullNameSplit = registerRequest.getFullName().split(" ");
+        String firstName = fullNameSplit[0];
+        String lastName = fullNameSplit.length == 1 ? "" : fullNameSplit[1];
+
         User user = User.builder()
                 .email(registerRequest.getEmail())
-                .firstName(registerRequest.getFullName().split(" ")[0])
-                .lastName(registerRequest.getFullName().split(" ")[1])
+                .firstName(firstName)
+                .lastName(lastName)
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .createdAt(new Date())
                 .role(User.UserRole.valueOf(registerRequest.getRole()))
