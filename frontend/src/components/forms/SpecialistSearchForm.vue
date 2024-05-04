@@ -28,7 +28,7 @@
                     <div class="filter__rating-item">
                         <label for="filter-rating-min">Min</label>
                         <input type="number" name="filter-rating" id="filter-rating-min"
-                            v-model="form.filterParams.rating.min">
+                            v-model="form.filterParams.minRating">
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
             <div class="specialtyList" v-else>
                 <div class="specialty" v-for="specialty in specialtyList" v-bind:key="specialty.id">
                     <label :for="`specialty-${specialty.id}`">{{ specialty.name }}</label>
-                    <input type="checkbox" name="specialtyList" :value="specialty.id" v-model="form.filterParams.specialtyList" :id="`specialty-${specialty.id}`">
+                    <input type="checkbox" name="specialtyList" :value="specialty.id" v-model="form.filterParams.specialityList" :id="`specialty-${specialty.id}`">
                 </div>
             </div>
         </div>
@@ -96,6 +96,7 @@ import useVuelidate from "@vuelidate/core";
 import DefaultLoader from "../utils/DefaultLoader.vue";
 import { SearchFilterDto } from "../../models/dto.js";
 import { useSpecialtyStore } from "../../stores/specialtyStore.js";
+import { useSpecialistStore } from "../../stores/specialistStore.js";
 import { mapActions, mapState } from "pinia";
 
 export default {
@@ -103,9 +104,10 @@ export default {
     components: {DefaultLoader},
     methods: {
         async submit() {
-            console.log(this.form);
+            this.fetchSpecialists(this.form);
         },
-        ...mapActions(useSpecialtyStore, ["ensureLoaded"])
+        ...mapActions(useSpecialtyStore, ["ensureLoaded"]),
+        ...mapActions(useSpecialistStore, ["fetchSpecialists"]),
     },
     async beforeMount() {
         this.ensureLoaded();
