@@ -10,6 +10,7 @@ import ru.itis.therapy.model.User;
 import ru.itis.therapy.repository.UserRepository;
 import ru.itis.therapy.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,5 +50,10 @@ public class UserServiceImpl implements UserService {
                 .specialistReviews(user.getSpecialistReviews())
                 .specialties(user.getSpecialties())
                 .build();
+    }
+
+    @Override
+    public void deleteAccount(Long userId) {
+        userRepository.delete(userRepository.findById(userId).get());
     }
 }
