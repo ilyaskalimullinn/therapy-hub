@@ -40,9 +40,9 @@ public class SpecialistRepository {
 
         if (request.getFilterParams() != null) {
             boolean hasWhere = false;
-            if (request.getFilterParams().getSpecialityList() != null
-                    && !request.getFilterParams().getSpecialityList().isEmpty()) {
-                String specialtyListString = request.getFilterParams().getSpecialityList().stream()
+            if (request.getFilterParams().getSpecialties() != null
+                    && !request.getFilterParams().getSpecialties().isEmpty()) {
+                String specialtyListString = request.getFilterParams().getSpecialties().stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(","));
                 template += " join user_speciality us on a.id = user_id where us.speciality_id in ("
@@ -79,7 +79,7 @@ public class SpecialistRepository {
             template += " where";
         }
 
-        template += " a.first_name || ' ' || a.last_name ilike '%" + request.getSpecialistName() + "%'";
+        template += " a.full_name ilike '%" + request.getSpecialistName() + "%'";
         template += " and a.role = 'SPECIALIST'";
 
         if (request.getOrder() != null) {

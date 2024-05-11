@@ -52,7 +52,7 @@ public class AuthController {
 
                 userDetailsResponse.setSpecialistRating(user.getSpecialistAvgRating());
                 userDetailsResponse.setSpecialistAppointmentPrice(user.getSpecialistAppointmentPrice());
-                userDetailsResponse.setSpecialtyList(user.getSpecialityList());
+                userDetailsResponse.setSpecialties(user.getSpecialties());
         }        
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -70,7 +70,7 @@ public class AuthController {
 
         UserDetailsResponse userDetailsResponse = UserDetailsResponse.builder()
                 .email(loginRequest.getEmail())
-                .fullName(user.getFirstName() + " " + user.getLastName())
+                .fullName(user.getFullName())
                 .role(String.valueOf(user.getRole()))
                 .build();
 
@@ -87,7 +87,7 @@ public class AuthController {
 
             userDetailsResponse.setSpecialistRating(user.getSpecialistAvgRating());
             userDetailsResponse.setSpecialistAppointmentPrice(user.getSpecialistAppointmentPrice());
-            userDetailsResponse.setSpecialtyList(user.getSpecialityList());
+            userDetailsResponse.setSpecialties(user.getSpecialties());
         }
 
         return ResponseEntity.status(HttpStatus.OK)

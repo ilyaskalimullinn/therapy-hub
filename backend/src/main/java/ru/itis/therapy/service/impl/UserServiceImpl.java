@@ -2,17 +2,14 @@ package ru.itis.therapy.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.itis.therapy.dto.UserDto;
-import ru.itis.therapy.dto.request.SearchSpecialistRequest;
 import ru.itis.therapy.exception.UserAlreadyExistsException;
 import ru.itis.therapy.exception.UserNotFoundException;
 import ru.itis.therapy.model.User;
 import ru.itis.therapy.repository.UserRepository;
 import ru.itis.therapy.service.UserService;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,8 +39,7 @@ public class UserServiceImpl implements UserService {
 
         return UserDto.builder()
                 .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .fullName(user.getFullName())
                 .createdAt(user.getCreatedAt())
                 .role(user.getRole())
                 .specialistBio(user.getSpecialistBio())
@@ -51,7 +47,7 @@ public class UserServiceImpl implements UserService {
                 .specialistAvgRating(user.getSpecialistAvgRating())
                 .clientReviews(user.getClientReviews())
                 .specialistReviews(user.getSpecialistReviews())
-                .specialityList(user.getSpecialityList())
+                .specialties(user.getSpecialties())
                 .build();
     }
 }

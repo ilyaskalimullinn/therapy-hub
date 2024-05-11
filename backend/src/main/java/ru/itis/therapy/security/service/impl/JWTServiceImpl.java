@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.itis.therapy.model.User;
+import ru.itis.therapy.repository.UserRepository;
 import ru.itis.therapy.security.service.JWTService;
 
 import java.nio.charset.StandardCharsets;
@@ -21,6 +22,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class JWTServiceImpl implements JWTService {
+
+    private final UserRepository userRepository;
 
     @Value("${jwt.lifetime}")
     private Duration tokenLifetime;
@@ -34,6 +37,7 @@ public class JWTServiceImpl implements JWTService {
                 .withSubject(user.getEmail())
                 .withIssuedAt(Date.from(Instant.now()))
                 .withExpiresAt(Date.from(Instant.now().plusSeconds(tokenLifetime.toSeconds())))
+                .withClaim("id", userRepository.findByEmail(user.getEmail()).get().getId())
                 .sign(Algorithm.HMAC256(secret.getBytes(StandardCharsets.UTF_8)));
     }
 

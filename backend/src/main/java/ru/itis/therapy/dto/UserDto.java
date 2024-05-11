@@ -1,12 +1,10 @@
 package ru.itis.therapy.dto;
 
 import lombok.*;
-import ru.itis.therapy.model.Appointment;
 import ru.itis.therapy.model.Review;
-import ru.itis.therapy.model.Speciality;
+import ru.itis.therapy.model.Specialty;
 import ru.itis.therapy.model.User;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -18,9 +16,7 @@ import java.util.List;
 public class UserDto {
     private String email;
 
-    private String firstName;
-
-    private String lastName;
+    private String fullName;
 
     private Date createdAt;
 
@@ -36,5 +32,5 @@ public class UserDto {
 
     private List<Review> specialistReviews;
 
-    private List<Speciality> specialityList;
+    private List<Specialty> specialties;
 }

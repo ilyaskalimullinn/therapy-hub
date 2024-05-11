@@ -9,7 +9,7 @@ import java.util.List;
 
 @Builder
 @Data
-@ToString(exclude = {"specialityList", "clientReviews", "specialistReviews"})
+@ToString(exclude = {"specialties", "clientReviews", "specialistReviews"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -23,11 +23,8 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "full_name")
+    private String fullName;
 
     private String password;
 
@@ -63,7 +60,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "speciality_id")
     )
-    private List<Speciality> specialityList;
+    private List<Specialty> specialties;
 
     public enum UserRole {
         SPECIALIST,

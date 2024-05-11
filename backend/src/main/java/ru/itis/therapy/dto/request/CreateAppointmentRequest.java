@@ -5,14 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchSpecialistFilterParams {
-    private SearchSpecialistPriceFilter price;
-    private Double minRating;
-    private List<Long> specialties;
+public class CreateAppointmentRequest {
+    private Long specialistId;
+    private Date date;
 }

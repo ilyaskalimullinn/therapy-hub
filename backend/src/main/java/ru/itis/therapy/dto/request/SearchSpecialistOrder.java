@@ -17,8 +17,4 @@ public class SearchSpecialistOrder {
 
     @JsonProperty("type")
     private String orderType;
-
-    public enum OrderBy {
-
-    }
 }

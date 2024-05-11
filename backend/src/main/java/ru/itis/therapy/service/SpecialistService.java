@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SpecialistService {
     List<User> getAllByFilter(SearchSpecialistRequest request);
+    User getById(Long id);
 }
