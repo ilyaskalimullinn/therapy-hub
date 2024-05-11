@@ -87,7 +87,7 @@ public class AuthController {
 
             userDetailsResponse.setSpecialistRating(user.getSpecialistAvgRating());
             userDetailsResponse.setSpecialistAppointmentPrice(user.getSpecialistAppointmentPrice());
-            userDetailsResponse.setSpecialtyList(user.getSpecialtyList());
+            userDetailsResponse.setSpecialties(user.getSpecialties());
         }
 
         return ResponseEntity.status(HttpStatus.OK)

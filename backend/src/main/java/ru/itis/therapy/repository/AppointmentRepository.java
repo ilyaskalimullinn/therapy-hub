@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.itis.therapy.model.Appointment;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
