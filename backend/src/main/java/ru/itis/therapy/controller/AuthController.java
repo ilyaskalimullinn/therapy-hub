@@ -41,7 +41,7 @@ public class AuthController {
         if (user.getRole().equals(User.UserRole.SPECIALIST)) {
                 userDetailsResponse.setSpecialistBio(user.getSpecialistBio());
 
-                if (!user.getSpecialistReviews().isEmpty()) {
+                if (user.getSpecialistReviews() != null && !user.getSpecialistReviews().isEmpty()) {
                         Double rating = (double) user.getSpecialistReviews().stream()
                                         .map(Review::getRating)
                                         .reduce(0, Integer::sum) / user.getSpecialistReviews().size();
@@ -77,7 +77,7 @@ public class AuthController {
         if (user.getRole().equals(User.UserRole.SPECIALIST)) {
             userDetailsResponse.setSpecialistBio(user.getSpecialistBio());
 
-            if (!user.getSpecialistReviews().isEmpty()) {
+            if (user.getSpecialistReviews() != null && !user.getSpecialistReviews().isEmpty()) {
                 Double rating =  (double) user.getSpecialistReviews().stream()
                         .map(Review::getRating)
                         .reduce(0, Integer::sum) / user.getSpecialistReviews().size();

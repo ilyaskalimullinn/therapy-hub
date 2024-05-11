@@ -2,6 +2,7 @@ package ru.itis.therapy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itis.therapy.dto.request.CreateAppointmentRequest;
@@ -21,7 +22,7 @@ public class AppointmentController {
     @PostMapping("/new")
     public ResponseEntity<Void> create(@RequestBody CreateAppointmentRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         appointmentService.create(request, jwtService.getClaims(token.substring(7)).get("id").asLong());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/approve/{appointmentId}")

@@ -9,4 +9,5 @@ import java.util.List;
 public interface UserService {
     void create(User user);
     UserDto getByEmail(String email);
+    void deleteAccount(Long userId);
 }
