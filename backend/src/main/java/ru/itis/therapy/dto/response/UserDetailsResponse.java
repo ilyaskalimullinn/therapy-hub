@@ -2,7 +2,7 @@ package ru.itis.therapy.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import ru.itis.therapy.model.Speciality;
+import ru.itis.therapy.model.Specialty;
 
 import java.util.List;
 
@@ -29,6 +29,6 @@ public class UserDetailsResponse {
     @JsonProperty("price")
     private Integer specialistAppointmentPrice;
 
-    @JsonProperty("specialities")
-    private List<Speciality> specialtyList;
+    @JsonProperty("specialties")
+    private List<Specialty> specialties;
 }

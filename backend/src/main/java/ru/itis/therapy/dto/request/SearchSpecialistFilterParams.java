@@ -15,5 +15,5 @@ import java.util.List;
 public class SearchSpecialistFilterParams {
     private SearchSpecialistPriceFilter price;
     private Double minRating;
-    private List<Long> specialityList;
+    private List<Long> specialties;
 }

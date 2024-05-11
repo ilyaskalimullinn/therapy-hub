@@ -42,8 +42,7 @@ public class UserServiceImpl implements UserService {
 
         return UserDto.builder()
                 .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .fullName(user.getFullName())
                 .createdAt(user.getCreatedAt())
                 .role(user.getRole())
                 .specialistBio(user.getSpecialistBio())
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService {
                 .specialistAvgRating(user.getSpecialistAvgRating())
                 .clientReviews(user.getClientReviews())
                 .specialistReviews(user.getSpecialistReviews())
-                .specialityList(user.getSpecialityList())
+                .specialties(user.getSpecialties())
                 .build();
     }
 }

@@ -35,4 +35,7 @@ public class Appointment {
 
     @Column(name = "scheduled_at")
     private Date scheduledAt;
+
+    @Column(name = "is_approved")
+    private Boolean isApproved;
 }
