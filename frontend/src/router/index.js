@@ -6,6 +6,7 @@ import ProfileView from '@/views/ProfileView.vue'
 import LogoutView from '@/views/LogoutView.vue'
 import { useUserStore } from '@/stores/userStore'
 import SpecialistSearchView from '@/views/SpecialistSearchView.vue'
+import SpecialistView from '@/views/SpecialistView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +60,14 @@ const router = createRouter({
       path: "/search",
       name: "SpecialistSearch",
       component: SpecialistSearchView,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/specialist/:id",
+      name: "Specialist",
+      component: SpecialistView,
       meta: {
         requiresAuth: true
       }
