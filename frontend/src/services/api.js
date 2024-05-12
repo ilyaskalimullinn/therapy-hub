@@ -42,7 +42,7 @@ export async function apiRegister(registrationDto) {
 }
 
 export async function apiFetchSpecialtyList() {
-    const response = await instance.get("/speciality").catch(defaultApiExceptionHandler);
+    const response = await instance.get("/specialty").catch(defaultApiExceptionHandler);
 
     const specialtyList = response.data;
     return specialtyList;
