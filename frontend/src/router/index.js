@@ -7,6 +7,7 @@ import LogoutView from '@/views/LogoutView.vue'
 import { useUserStore } from '@/stores/userStore'
 import SpecialistSearchView from '@/views/SpecialistSearchView.vue'
 import SpecialistView from '@/views/SpecialistView.vue'
+import AppointmentListView from '@/views/AppointmentListView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +69,14 @@ const router = createRouter({
       path: "/specialist/:id",
       name: "Specialist",
       component: SpecialistView,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/appointments",
+      name: "AppointmentList",
+      component: AppointmentListView,
       meta: {
         requiresAuth: true
       }

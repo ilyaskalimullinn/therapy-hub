@@ -50,14 +50,24 @@ export async function apiFetchSpecialtyList() {
 
 export async function apiFetchSpecialists(searchFilterDto) {
     const response = await instance.post("/specialist/find", searchFilterDto).catch(defaultApiExceptionHandler);
-    // console.log(response.data);
     return response.data;
 }
 
 export async function apiFetchSpecialist(id) {
     const response = await instance.get(`/specialist/${id}`).catch(defaultApiExceptionHandler);
+    return response.data;
+}
+
+export async function apiFetchAppointments() {
+    const response = await instance.get("/appointment/all").catch(defaultApiExceptionHandler);
     console.log(response.data);
     return response.data;
+}
+
+export async function apiCreateAppointment(createAppointmentDto) {
+    await instance
+        .post("/appointment/new", createAppointmentDto.toRepresentation())
+        .catch(defaultApiExceptionHandler);
 }
 
 function defaultApiExceptionHandler(error) {

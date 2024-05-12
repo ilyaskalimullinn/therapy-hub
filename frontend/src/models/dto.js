@@ -51,4 +51,18 @@ class SearchFilterDto {
     }
 }
 
-export { RegistrationDto, LoginDto, SearchFilterDto };
+class CreateAppointmentDto {
+    constructor(specialistId, appointmentDatetime) {
+        this.specialistId = specialistId;
+        this.appointmentDatetime = appointmentDatetime;
+    }
+
+    toRepresentation() {
+        return {
+            "specialistId": this.specialistId,
+            "date": this.appointmentDatetime,
+        }
+    }
+}
+
+export { RegistrationDto, LoginDto, SearchFilterDto, CreateAppointmentDto };

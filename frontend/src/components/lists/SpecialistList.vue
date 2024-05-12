@@ -1,7 +1,7 @@
 <template>
     <DefaultLoader v-if="requestData.loading" />
     <div class="error" v-else-if="requestData.error !== null">
-        {{ requestData.error.getMessage() }}
+        {{ requestData.error.message }}
     </div>
     <div class="specialistList" v-else>
         <div class="specialist" v-for="specialist in specialists" v-bind:key="specialist.id">
