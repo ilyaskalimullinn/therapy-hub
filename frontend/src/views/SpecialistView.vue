@@ -38,7 +38,7 @@
 
             </div>
 
-            <CreateAppointmentForm :specialistId="parseInt($route.params.id)" />
+            <CreateAppointmentForm :specialistId="parseInt($route.params.id)" v-if="user.role === 'CLIENT'" />
         </div>
     </MainLayout>
 </template>
@@ -47,6 +47,7 @@
 <script>
 import MainLayout from "../components/blocks/MainLayout.vue";
 import { useSpecialistStore } from "../stores/specialistStore.js";
+import { useUserStore } from "../stores/userStore.js";
 import { mapActions, mapState } from "pinia";
 import DefaultLoader from "../components/utils/DefaultLoader.vue";
 import CreateAppointmentForm from "../components/forms/CreateAppointmentForm.vue";
@@ -64,7 +65,8 @@ export default {
         ...mapState(useSpecialistStore, {
             requestData: (state) => state.requestData,
             currentSpecialist: (state) => state.currentSpecialist,
-        })
+        }),
+        ...mapState(useUserStore, ["user"])
     }
 }
 </script>

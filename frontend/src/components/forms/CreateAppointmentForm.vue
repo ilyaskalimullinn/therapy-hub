@@ -61,7 +61,6 @@ export default {
                 return;
             }
             let createAppointmentDto = new CreateAppointmentDto(this.specialistId, this.form.datetime);
-            console.log(createAppointmentDto);
             await this.createAppointment(createAppointmentDto);
             if (!this.error) {
                 this.$router.push({ name: 'AppointmentList' });

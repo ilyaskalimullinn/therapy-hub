@@ -60,7 +60,6 @@ export async function apiFetchSpecialist(id) {
 
 export async function apiFetchAppointments() {
     const response = await instance.get("/appointment/all").catch(defaultApiExceptionHandler);
-    console.log(response.data);
     return response.data;
 }
 
