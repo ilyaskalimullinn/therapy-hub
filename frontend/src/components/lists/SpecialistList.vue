@@ -1,31 +1,34 @@
 <template>
     <DefaultLoader v-if="requestData.loading" />
     <div class="error" v-else-if="requestData.error !== null">
-        {{ requestData.error.getMessage() }}
+        {{ requestData.error.message }}
     </div>
-    <ul class="specialistList" v-else>
-        <li class="specialist" v-for="specialist in specialists" v-bind:key="specialist.id">
+    <div class="specialistList" v-else>
+        <div class="specialist" v-for="specialist in specialists" v-bind:key="specialist.id">
+            <div class="link">
+                <RouterLink :to="{name: 'Specialist', params: {id: specialist.id}}">Check out more</RouterLink>
+            </div>
             <div class="name">
-                {{ specialist.name }}
+                Name: {{ specialist.name }}
             </div>
             <div class="bio">
                 Bio: {{ specialist.bio }}
             </div>
             <div class="price">
-                {{ specialist.price }} рублёв
+                Price: {{ specialist.price }} рублёв
             </div>
             <div class="rating">Рейтинг: {{ specialist.rating }}</div>
             <div class="specialtyList">
                 <div>Специальности: </div>
                 <ul class="specialtyListUl">
-                    <li class="specialty" v-for="specialty in specialist.specialityList" v-bind:key="specialty.id">
+                    <li class="specialty" v-for="specialty in specialist.specialties" v-bind:key="specialty.id">
                         {{ specialty.name }}
                     </li>
                 </ul>
             </div>
 
-        </li>
-    </ul>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -47,13 +50,8 @@ export default {
 </script>
 
 <style scoped>
-.specialist {
-    display: flex;
-    justify-content: space-between;
-}
 
-.specialtyListUl {
-    display: flex;
-    flex-direction: column
+.specialist {
+    border: 1px solid black;
 }
 </style>

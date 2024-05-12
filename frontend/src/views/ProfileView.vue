@@ -16,7 +16,7 @@ import { mapState } from "pinia";
         <div v-if="user.role === 'SPECIALIST'">
             <h2>Специальности:</h2>
             <ul>
-                <li v-for="specialty in user.specialtyList" :key="specialty.id">
+                <li v-for="specialty in user.specialties" :key="specialty.id">
                     {{ specialty.name }}
                 </li>
             </ul>
@@ -29,6 +29,9 @@ import MainLayout from "../components/blocks/MainLayout.vue";
 
 export default {
     name: "ProfileView",
+    beforeMount() {
+        console.log(this.user)
+    },
     computed: {
         ...mapState(useUserStore, {
             error: (state) => state.requestData.error,

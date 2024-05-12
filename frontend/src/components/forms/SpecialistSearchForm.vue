@@ -76,12 +76,12 @@
         <div class="specialty">
             <DefaultLoader v-if="specialtyListRequestData.loading" />
             <div class="error" v-else-if="specialtyListRequestData.error !== null">
-                {{ specialtyListRequestData.error.getMessage() }}
+                {{ specialtyListRequestData.error.message }}
             </div>
             <div class="specialtyList" v-else>
                 <div class="specialty" v-for="specialty in specialtyList" v-bind:key="specialty.id">
                     <label :for="`specialty-${specialty.id}`">{{ specialty.name }}</label>
-                    <input type="checkbox" name="specialtyList" :value="specialty.id" v-model="form.filterParams.specialityList" :id="`specialty-${specialty.id}`">
+                    <input type="checkbox" name="specialtyList" :value="specialty.id" v-model="form.filterParams.specialtyList" :id="`specialty-${specialty.id}`">
                 </div>
             </div>
         </div>

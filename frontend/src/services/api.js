@@ -42,7 +42,7 @@ export async function apiRegister(registrationDto) {
 }
 
 export async function apiFetchSpecialtyList() {
-    const response = await instance.get("/speciality").catch(defaultApiExceptionHandler);
+    const response = await instance.get("/specialty").catch(defaultApiExceptionHandler);
 
     const specialtyList = response.data;
     return specialtyList;
@@ -50,15 +50,36 @@ export async function apiFetchSpecialtyList() {
 
 export async function apiFetchSpecialists(searchFilterDto) {
     const response = await instance.post("/specialist/find", searchFilterDto).catch(defaultApiExceptionHandler);
-    // console.log(response.data);
     return response.data;
+}
+
+export async function apiFetchSpecialist(id) {
+    const response = await instance.get(`/specialist/${id}`).catch(defaultApiExceptionHandler);
+    return response.data;
+}
+
+export async function apiFetchAppointments() {
+    const response = await instance.get("/appointment/all").catch(defaultApiExceptionHandler);
+    return response.data;
+}
+
+export async function apiCreateAppointment(createAppointmentDto) {
+    await instance
+        .post("/appointment/new", createAppointmentDto.toRepresentation())
+        .catch(defaultApiExceptionHandler);
+}
+
+export async function apiApproveAppointment(appointmentId) {
+    await instance
+        .post(`/appointment/approve/${appointmentId}`)
+        .catch(defaultApiExceptionHandler);
 }
 
 function defaultApiExceptionHandler(error) {
     if (error.response) {
         console.error(error.response);
 
-        if (error.response.status === 403) {
+        if (error.response.status === 401) {
             let err = new Error("Error with authentication, please retry logging in")
             err.statusCode = error.response.status;
             throw err;
