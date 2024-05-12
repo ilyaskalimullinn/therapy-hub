@@ -54,11 +54,17 @@ export async function apiFetchSpecialists(searchFilterDto) {
     return response.data;
 }
 
+export async function apiFetchSpecialist(id) {
+    const response = await instance.get(`/specialist/${id}`).catch(defaultApiExceptionHandler);
+    console.log(response.data);
+    return response.data;
+}
+
 function defaultApiExceptionHandler(error) {
     if (error.response) {
         console.error(error.response);
 
-        if (error.response.status === 403) {
+        if (error.response.status === 401) {
             let err = new Error("Error with authentication, please retry logging in")
             err.statusCode = error.response.status;
             throw err;
