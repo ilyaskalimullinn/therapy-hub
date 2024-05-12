@@ -8,16 +8,29 @@
         <div class="appointment-data" v-else>
             <div class="appointments">
                 <div v-for="appointment in appointments" v-bind:key="appointment.id" class="appointment">
-                    <div class="appointment-specialist">
-                        <div class="specialist-name">
-                            Specialist:
-                            <RouterLink :to="{name: 'Specialist', params: {id: appointment.specialist.id}}">
-                                {{ appointment.specialist.fullName }}
-                            </RouterLink>
+                    <div class="appointment-for-client" v-if="user.role === 'CLIENT'">
+                        <div class="appointment-specialist">
+                            <div class="specialist-name">
+                                Specialist:
+                                <RouterLink :to="{ name: 'Specialist', params: { id: appointment.specialist.id } }">
+                                    {{ appointment.specialist.fullName }}
+                                </RouterLink>
 
+                            </div>
+                            <div class="specialist-rating">
+                                Rating: {{ appointment.specialist.rating }}
+                            </div>
                         </div>
-                        <div class="specialist-rating">
-                            Rating: {{ appointment.specialist.rating }}
+                    </div>
+                    <div class="appointment-for-specialist" v-else>
+                        <div class="appointment-client">
+                            <div class="client-name">
+                                Client: {{ appointment.client.fullName }}
+                            </div>
+                        </div>
+
+                        <div class="appointment-approve" v-if="!appointment.isApproved">
+                            <button class="approve-button" @click="approve(appointment.id)">Approve</button>
                         </div>
                     </div>
 
@@ -44,23 +57,28 @@
 <script>
 import MainLayout from "../components/blocks/MainLayout.vue";
 import { useAppointmentStore } from "../stores/appointmentStore.js";
+import { useUserStore } from "../stores/userStore.js";
 import { mapActions, mapState } from "pinia";
 import DefaultLoader from "../components/utils/DefaultLoader.vue";
 
 export default {
     name: "AppointmentListView",
-    components: { MainLayout, DefaultLoader},
+    components: { MainLayout, DefaultLoader },
     async beforeMount() {
         this.fetchAppointments();
     },
     methods: {
-        ...mapActions(useAppointmentStore, ["fetchAppointments"]),
+        ...mapActions(useAppointmentStore, ["fetchAppointments", "approveAppointment"]),
+        async approve(appointmentId) {
+            this.approveAppointment(appointmentId);
+        }
     },
     computed: {
         ...mapState(useAppointmentStore, {
             requestData: (state) => state.requestData,
             appointments: (state) => state.appointments,
-        })
+        }),
+        ...mapState(useUserStore, ["user"])
     }
 }
 </script>
@@ -71,7 +89,7 @@ export default {
 }
 
 .approved {
-    background-color: green;
+    background-color: lightgreen;
 }
 
 .not-approved {

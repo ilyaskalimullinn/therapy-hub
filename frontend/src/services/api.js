@@ -70,6 +70,12 @@ export async function apiCreateAppointment(createAppointmentDto) {
         .catch(defaultApiExceptionHandler);
 }
 
+export async function apiApproveAppointment(appointmentId) {
+    await instance
+        .post(`/appointment/approve/${appointmentId}`)
+        .catch(defaultApiExceptionHandler);
+}
+
 function defaultApiExceptionHandler(error) {
     if (error.response) {
         console.error(error.response);

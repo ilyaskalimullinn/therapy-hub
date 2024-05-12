@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { RequestData } from "@/models/util.js";
-import { apiFetchAppointments, apiCreateAppointment } from "@/services/api";
+import { apiFetchAppointments, apiCreateAppointment, apiApproveAppointment } from "@/services/api";
 
 export const useAppointmentStore = defineStore('appointmentStore', {
     state: () => ({
@@ -24,6 +24,23 @@ export const useAppointmentStore = defineStore('appointmentStore', {
 
             try {
                 await apiCreateAppointment(createAppointmentDto);
+            } catch (error) {
+                this.requestData.setError(error);
+            }
+
+            this.requestData.stopLoading();
+        },
+        async approveAppointment(appointmentId) {
+            this.requestData.startLoading();
+
+            try {
+                await apiApproveAppointment(appointmentId);
+
+                for (let appointment of this.appointments) {
+                    if (appointment.id === appointmentId) {
+                        appointment.isApproved = true;
+                    }
+                }
             } catch (error) {
                 this.requestData.setError(error);
             }

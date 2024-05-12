@@ -39,6 +39,11 @@ export default {
                     authRequired: true,
                 },
                 {
+                    name: "AppointmentList",
+                    text: "My appointments",
+                    authRequired: true,
+                },
+                {
                     name: "Login",
                     text: "Sign in",
                     guestRequired: true,
