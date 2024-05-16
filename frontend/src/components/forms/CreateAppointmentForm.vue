@@ -23,7 +23,7 @@ import FormSubmit from "./FormSubmit.vue";
 import { CreateAppointmentDto } from "../../models/dto.js";
 
 export default {
-    name: "LoginForm",
+    name: "CreateAppointmentForm",
     components: { FormSubmit },
     setup() {
         return {

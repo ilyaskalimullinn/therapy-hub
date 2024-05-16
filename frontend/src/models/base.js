@@ -22,4 +22,15 @@ class User {
     }
 }
 
-export { User };
+class Review {
+    constructor(id, client, specialist, rating, comment, createdAt) {
+        this.id = id;
+        this.client = client;
+        this.specialist = specialist;
+        this.rating = rating;
+        this.comment = comment;
+        this.createdAt = createdAt;
+    }
+}
+
+export { User, Review };

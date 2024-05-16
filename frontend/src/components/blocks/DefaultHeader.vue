@@ -44,6 +44,11 @@ export default {
                     authRequired: true,
                 },
                 {
+                    name: "Reviews",
+                    text: "My reviews",
+                    authRequired: true,
+                },
+                {
                     name: "Login",
                     text: "Sign in",
                     guestRequired: true,
