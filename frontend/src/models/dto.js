@@ -65,4 +65,11 @@ class CreateAppointmentDto {
     }
 }
 
-export { RegistrationDto, LoginDto, SearchFilterDto, CreateAppointmentDto };
+class CreateReviewDto {
+    constructor(comment, rating) {
+        this.comment = comment;
+        this.rating = rating;
+    }
+}
+
+export { RegistrationDto, LoginDto, SearchFilterDto, CreateAppointmentDto, CreateReviewDto };

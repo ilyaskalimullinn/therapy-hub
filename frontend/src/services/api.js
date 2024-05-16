@@ -55,6 +55,7 @@ export async function apiFetchSpecialists(searchFilterDto) {
 
 export async function apiFetchSpecialist(id) {
     const response = await instance.get(`/specialist/${id}`).catch(defaultApiExceptionHandler);
+    console.log(response.data); // TODO remove
     return response.data;
 }
 
@@ -72,6 +73,18 @@ export async function apiCreateAppointment(createAppointmentDto) {
 export async function apiApproveAppointment(appointmentId) {
     await instance
         .post(`/appointment/approve/${appointmentId}`)
+        .catch(defaultApiExceptionHandler);
+}
+
+export async function apiFetchClientReviews() {
+    const response = await instance.get("/review/by-me").catch(defaultApiExceptionHandler);
+    console.log(response.data)
+    return response.data;
+}
+
+export async function apiCreateReview(specialistId, createReviewDto) {
+    await instance
+        .post(`/review/new/${specialistId}`, createReviewDto)
         .catch(defaultApiExceptionHandler);
 }
 

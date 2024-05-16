@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/userStore'
 import SpecialistSearchView from '@/views/SpecialistSearchView.vue'
 import SpecialistView from '@/views/SpecialistView.vue'
 import AppointmentListView from '@/views/AppointmentListView.vue'
+import ReviewsView from '@/views/ReviewsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -80,7 +81,15 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       }
-    }
+    },
+    {
+      path: "/my-reviews",
+      name: "Reviews",
+      component: ReviewsView,
+      meta: {
+        requiresAuth: true
+      }
+    },
     
   ]
 })

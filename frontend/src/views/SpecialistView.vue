@@ -23,22 +23,14 @@
                     <div class="review-list-title">
                         Reviews:
                     </div>
-                    <div v-for="review in currentSpecialist.reviews" v-bind:key="review.id" class="review">
-                        <div class="review-client">
-                            {{ review.client.fullName }}
-                        </div>
-                        <div class="review-rating">
-                            {{ review.rating }}
-                        </div>
-                        <div class="review-comment">
-                            {{ review.comment }}
-                        </div>
-                    </div>
+                    <ReviewBlock v-for="review in currentSpecialist.reviews" v-bind:key="review.id" :review="review" />
                 </div>
 
             </div>
 
             <CreateAppointmentForm :specialistId="parseInt($route.params.id)" v-if="user.role === 'CLIENT'" />
+
+            <CreateReviewForm :specialistId="parseInt($route.params.id)" v-if="user.role === 'CLIENT' && !hasAlreadyWrittenReview" />
         </div>
     </MainLayout>
 </template>
@@ -46,15 +38,17 @@
 
 <script>
 import MainLayout from "../components/blocks/MainLayout.vue";
+import ReviewBlock from "../components/blocks/ReviewBlock.vue";
 import { useSpecialistStore } from "../stores/specialistStore.js";
 import { useUserStore } from "../stores/userStore.js";
 import { mapActions, mapState } from "pinia";
 import DefaultLoader from "../components/utils/DefaultLoader.vue";
 import CreateAppointmentForm from "../components/forms/CreateAppointmentForm.vue";
+import CreateReviewForm from "../components/forms/CreateReviewForm.vue";
 
 export default {
     name: "SpecialistView",
-    components: { MainLayout, DefaultLoader, CreateAppointmentForm },
+    components: { MainLayout, DefaultLoader, CreateAppointmentForm, ReviewBlock, CreateReviewForm },
     async beforeMount() {
         this.fetchSpecialist(this.$route.params.id);
     },
@@ -66,7 +60,15 @@ export default {
             requestData: (state) => state.requestData,
             currentSpecialist: (state) => state.currentSpecialist,
         }),
-        ...mapState(useUserStore, ["user"])
+        ...mapState(useUserStore, ["user"]),
+        hasAlreadyWrittenReview() {
+            for (let review of this.currentSpecialist.reviews) {
+                if (review.client.fullName === this.user.fullName) {
+                    return true;
+                }
+            }
+            return false
+        }
     }
 }
 </script>
