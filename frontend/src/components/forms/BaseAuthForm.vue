@@ -8,7 +8,8 @@
             </slot>
         </div>
 
-        <slot name="submit-button">
+        <DefaultLoader v-if="requestData.loading" />
+        <slot name="submit-button" v-else>
 
         </slot>
 
@@ -26,9 +27,17 @@
 </template>
 
 <script>
+import { useUserStore } from "../../stores/userStore.js";
+import { mapState } from "pinia";
+import DefaultLoader from "../utils/DefaultLoader.vue";
+
 export default {
     name: "BaseAuthForm",
-    props: ["error", "title"]
+    components: {DefaultLoader},
+    props: ["error", "title"],
+    computed: {
+        ...mapState(useUserStore, ["requestData"])
+    }
 }
 </script>
 
