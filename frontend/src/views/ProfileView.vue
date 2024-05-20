@@ -21,14 +21,18 @@ import { mapState } from "pinia";
                 </li>
             </ul>
         </div>
+
+        <DeleteProfileForm />
     </MainLayout>
 </template>
 
 <script>
 import MainLayout from "../components/blocks/MainLayout.vue";
+import DeleteProfileForm from "@/components/forms/DeleteProfileForm.vue";
 
 export default {
     name: "ProfileView",
+    components: {DeleteProfileForm},
     beforeMount() {
         console.log(this.user)
     },

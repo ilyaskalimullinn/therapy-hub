@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { apiLogin, apiRegister } from "../services/api.js";
+import { apiLogin, apiRegister, apiDeleteProfile } from "../services/api.js";
 import {
     clearTokenInStorage,
     clearUserInStorage,
@@ -53,6 +53,18 @@ export const useUserStore = defineStore('userStore', {
             clearUserInStorage();
             clearTokenInStorage();
             this.$reset();
+        },
+        async deleteProfile() {
+            this.requestData.startLoading();
+
+            try {
+                await apiDeleteProfile();
+                this.logout();
+            } catch (error) {
+                this.setError(error);
+            }
+
+            this.requestData.stopLoading();
         }
     },
     getters: {
