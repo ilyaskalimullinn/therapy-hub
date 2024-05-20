@@ -90,6 +90,10 @@ export async function apiDeleteProfile() {
     await instance.post("/profile/edit/delete").catch(defaultApiExceptionHandler);
 }
 
+export async function apiUpdateSpecialties(specialties) {
+    await instance.post("/profile/edit/specialty", specialties).catch(defaultApiExceptionHandler);
+}
+
 function defaultApiExceptionHandler(error) {
     if (error.response) {
         console.error(error.response);

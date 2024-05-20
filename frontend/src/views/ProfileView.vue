@@ -20,6 +20,12 @@ import { mapState } from "pinia";
                     {{ specialty.name }}
                 </li>
             </ul>
+
+            <p class="price">Price: {{ user.price }}</p>
+            <p class="rating">Rating: {{ user.rating }}</p>
+            <p class="bio">Bio: {{ user.bio }}</p>
+
+            <UpdateSpecialtiesForm />
         </div>
 
         <DeleteProfileForm />
@@ -29,13 +35,11 @@ import { mapState } from "pinia";
 <script>
 import MainLayout from "../components/blocks/MainLayout.vue";
 import DeleteProfileForm from "@/components/forms/DeleteProfileForm.vue";
+import UpdateSpecialtiesForm from "@/components/forms/UpdateSpecialtiesForm.vue";
 
 export default {
     name: "ProfileView",
-    components: {DeleteProfileForm},
-    beforeMount() {
-        console.log(this.user)
-    },
+    components: { DeleteProfileForm, UpdateSpecialtiesForm },
     computed: {
         ...mapState(useUserStore, {
             error: (state) => state.requestData.error,
