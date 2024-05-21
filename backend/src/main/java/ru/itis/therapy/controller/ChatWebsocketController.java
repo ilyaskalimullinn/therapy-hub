@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
+import ru.itis.therapy.dto.chat.GetPreviousMessage;
 import ru.itis.therapy.dto.chat.MetaMessage;
+import ru.itis.therapy.dto.chat.PreviousMessagesMessage;
 import ru.itis.therapy.dto.chat.UserMessage;
+import ru.itis.therapy.dto.chat.UserMessageData;
 import ru.itis.therapy.dto.request.SendMessageRequest;
 import ru.itis.therapy.model.Chat;
 import ru.itis.therapy.model.Message;
@@ -27,8 +30,8 @@ import ru.itis.therapy.repository.UserRepository;
 import ru.itis.therapy.security.service.JWTService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
-
 
 @Controller
 @RequiredArgsConstructor
@@ -43,15 +46,49 @@ public class ChatWebsocketController {
     @MessageMapping("/chat")
     public void processMessage(@Payload MetaMessage metaMessage,
             SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-        
+
         if (metaMessage instanceof UserMessage) {
             handleUserMessage((UserMessage) metaMessage, simpMessageHeaderAccessor);
+        } else if (metaMessage instanceof GetPreviousMessage) {
+            handleGetPreviousMessage((GetPreviousMessage) metaMessage, simpMessageHeaderAccessor);
+        } else {
+            throw new IllegalArgumentException("No such message type");
         }
+    }
 
+    private void handleGetPreviousMessage(GetPreviousMessage metaMessage,
+            SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+
+        List<Message> messages = this.messageRepository.findAllByChatId(metaMessage.getData().getChatId());
+        Chat chat = (Chat) simpMessageHeaderAccessor.getSessionAttributes().get("chat");
+
+        List<UserMessageData> userMessageDataList = messages
+                .stream()
+                .map(m -> UserMessageData.builder()
+                                .id(m.getId())
+                                .body(m.getBody())
+                                .chatId(chat.getId())
+                                .receiverId(m.getReceiver().getId())
+                                .senderId(m.getSender().getId())
+                                .build()
+                    )
+                .toList();
+
+        PreviousMessagesMessage previousMessagesMessage = PreviousMessagesMessage.builder()
+                .data(PreviousMessagesMessage.MessageData.builder()
+                        .messages(userMessageDataList)
+                        .build())
+                .build();
+        
+        String userFullId = (String) simpMessageHeaderAccessor.getSessionAttributes().get("userFullId");
+
+        simpMessagingTemplate.convertAndSendToUser(
+                userFullId, "/queue/messages",
+                previousMessagesMessage);
     }
 
     protected void handleUserMessage(UserMessage metaMessage, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
-        UserMessage.UserMessageData data = metaMessage.getData();
+        UserMessageData data = metaMessage.getData();
         User sender = (User) simpMessageHeaderAccessor.getSessionAttributes().get("sender");
         Chat chat = (Chat) simpMessageHeaderAccessor.getSessionAttributes().get("chat");
         User receiver = this.userRepository.findById(data.getReceiverId()).get();
@@ -64,13 +101,14 @@ public class ChatWebsocketController {
                 .createdAt(new Date())
                 .build();
 
-        messageRepository.save(message);
+        message = messageRepository.save(message);
         metaMessage.getData().setSenderId(sender.getId());
+        metaMessage.getData().setId(message.getId());
 
         simpMessagingTemplate.convertAndSendToUser(
                 data.getFullReceiverId(), "/queue/messages",
                 metaMessage);
-        
+
         simpMessagingTemplate.convertAndSendToUser(
                 data.getFullSenderId(), "/queue/messages",
                 metaMessage);
@@ -100,7 +138,10 @@ public class ChatWebsocketController {
             throw new IllegalArgumentException("This chat can't be accessed by this user");
         }
 
+        String userFullId = chat.getId() + "-" + userId;
+
         headers.getSessionAttributes().put("chat", chat);
+        headers.getSessionAttributes().put("userFullId", userFullId);
     }
 
     private Long getChatIdFromDestination(String destination) {

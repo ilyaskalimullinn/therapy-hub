@@ -26,16 +26,34 @@ export const useStompStore = defineStore('stompStore', {
                 `/user/${this.chatId}-${useUserStore().user.id}/queue/messages`,
                 this.onMessageReceived
             );
+
+            this.sendGetPreviousMessages();
         },
         onMessageReceived(msg) {
             console.log(msg);
             msg = JSON.parse(msg.body);
+            const data = msg.data;
 
             switch (msg.type) {
-                case "userMessage":
-                    useChatStore().messages.push(msg);
+                case "UserMessage":
+                    useChatStore().messages.push(data);
+                    break;
+                case "PreviousMessagesMessage":
+                    useChatStore().messages = data.messages;
+                    console.log(data.messages)
+                    // console.log(msg.messages)
                     break;
             }
+        },
+        sendGetPreviousMessages() {
+            const message = {
+                type: "GetPreviousMessage",
+                data: {
+                    chatId: this.chatId,
+                }
+            };
+
+            this.stompClient.send("/app/chat", {}, JSON.stringify(message));
         },
         onError(error) {
             console.err(error);
@@ -45,7 +63,7 @@ export const useStompStore = defineStore('stompStore', {
                 return;
             }
             const message = {
-                type: "userMessage",
+                type: "UserMessage",
                 data: {
                     receiverId: this.participant.id,
                     senderId: 1,

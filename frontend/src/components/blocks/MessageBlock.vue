@@ -1,6 +1,6 @@
 <template>
     <div :class='`message ${this.getClass}`' >
-        {{ message.data.body }}
+        {{ message.body }}
     </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
         ...mapState(useUserStore, ["user"]),
         ...mapState(useStompStore, ["participant"]),
         getClass() {
-            if (this.message.data.senderId === this.user.id) {
+            if (this.message.senderId === this.user.id) {
                 return "mine";
             }
             // console.log(this.message.senderId, this.user.id)

@@ -11,6 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserMessage extends MetaMessage {
-    private UserMessageData data;
+public class GetPreviousMessage extends MetaMessage {
+    private MessageData data;
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public class MessageData {
+        private Long chatId;
+    }
 }
