@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.itis.therapy.dto.request.CreateAppointmentRequest;
 import ru.itis.therapy.dto.request.CreateChatRequest;
 import ru.itis.therapy.dto.response.AppointmentResponse;
+import ru.itis.therapy.dto.response.ChatInfoResponse;
 import ru.itis.therapy.dto.response.ChatResponse;
 import ru.itis.therapy.dto.response.CreateChatResponse;
 import ru.itis.therapy.dto.response.ChatResponse.ChatResponseBuilder;
@@ -22,6 +23,7 @@ import ru.itis.therapy.security.service.JWTService;
 import ru.itis.therapy.service.AppointmentService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("${api.uri}/chat")
@@ -32,7 +34,8 @@ public class ChatController {
     private final ChatRepository chatRepository;
 
     @PostMapping("/new")
-    public ResponseEntity<CreateChatResponse> create(@RequestBody CreateChatRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public ResponseEntity<CreateChatResponse> create(@RequestBody CreateChatRequest request,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
         User currUser = userRepository.findById(jwtService.getClaims(token.substring(7)).get("id").asLong()).get();
         if (!currUser.getRole().equals(UserRole.CLIENT)) {
@@ -45,35 +48,62 @@ public class ChatController {
         }
 
         Chat chat = Chat.builder()
-            .firstParticipant(currUser)
-            .secondParticipant(participant)
-            .build();
+                .firstParticipant(currUser)
+                .secondParticipant(participant)
+                .build();
         Chat createdChat = chatRepository.save(chat);
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(CreateChatResponse.builder()
-                                                            .chatId(createdChat.getId())
-                                                            .build());
+                .chatId(createdChat.getId())
+                .build());
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<ChatResponse>> getAll(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        List<ChatResponse> chats = chatRepository.findAllWhereFirstParticipantIdEqualsOrSecondParticipantIdEquals(jwtService.getClaims(token.substring(7)).get("id").asLong())
-        .stream().map(c -> {
-            ChatResponse response = new ChatResponse();
-            response.setId(c.getId());
-            User participant;
-            if (c.getFirstParticipant().getId().equals(jwtService.getClaims(token.substring(7)).get("id").asLong())) {
-                participant = c.getSecondParticipant();
-            } else {
-                participant = c.getFirstParticipant();
-            }
-            response.setParticipant(ParticipantInfo.builder()
-                                    .id(participant.getId())
-                                    .fullName(participant.getFullName())
-                                    .build());
-            return response;
-        }).toList();
+        List<ChatResponse> chats = chatRepository
+                .findAllWhereFirstParticipantIdEqualsOrSecondParticipantIdEquals(
+                        jwtService.getClaims(token.substring(7)).get("id").asLong())
+                .stream().map(c -> {
+                    ChatResponse response = new ChatResponse();
+                    response.setId(c.getId());
+                    User participant;
+                    if (c.getFirstParticipant().getId()
+                            .equals(jwtService.getClaims(token.substring(7)).get("id").asLong())) {
+                        participant = c.getSecondParticipant();
+                    } else {
+                        participant = c.getFirstParticipant();
+                    }
+                    response.setParticipant(ParticipantInfo.builder()
+                            .id(participant.getId())
+                            .fullName(participant.getFullName())
+                            .build());
+                    return response;
+                }).toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(chats);
+    }
+
+    @GetMapping("/info/{id}")
+    public ResponseEntity<ChatResponse> getInfo(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            @PathVariable Long id) {
+        Chat chat = this.chatRepository.findById(id).get();
+
+        Long senderId = jwtService.getClaims(token.substring(7)).get("id").asLong();
+        User participant;
+        if (chat.getFirstParticipant().getId().equals(senderId)) {
+            participant = chat.getSecondParticipant();
+        } else {
+            participant = chat.getFirstParticipant();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(ChatResponse.builder()
+                .id(id)
+                .participant(
+                    ParticipantInfo.builder()
+                    .id(participant.getId())
+                    .fullName(participant.getFullName())
+                    .build()
+                )
+                .build());
     }
 }

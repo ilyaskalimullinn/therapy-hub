@@ -10,6 +10,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SendMessageRequest {
+    private String messageType;
+    private Long chatId;
+    private Long senderId;
     private Long receiverId;
     private String body;
+
+    // public enum MessageType {
+    //     userMessage
+    // }
+
+    public String getFullReceiverId() {
+        return this.chatId + "-" + this.receiverId;
+    }
 }

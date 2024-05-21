@@ -102,7 +102,12 @@ export async function apiFetchChats() {
 
 export async function apiCreateChat(createChatDto) {
     const response = await instance.post("/chat/new", createChatDto).catch(defaultApiExceptionHandler);
-    console.log(response.data);
+    return response.data;
+}
+
+export async function apiGetChatInfo(chatId) {
+    const response = await instance.get(`/chat/info/${chatId}`).catch(defaultApiExceptionHandler);
+    console.log(response.data)
     return response.data;
 }
 

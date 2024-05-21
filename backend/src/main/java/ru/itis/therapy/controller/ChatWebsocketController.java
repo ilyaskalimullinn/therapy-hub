@@ -1,23 +1,34 @@
 package ru.itis.therapy.controller;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+
+import ru.itis.therapy.dto.chat.MetaMessage;
+import ru.itis.therapy.dto.chat.UserMessage;
 import ru.itis.therapy.dto.request.SendMessageRequest;
 import ru.itis.therapy.model.Chat;
 import ru.itis.therapy.model.Message;
+import ru.itis.therapy.model.User;
 import ru.itis.therapy.repository.ChatRepository;
+import ru.itis.therapy.repository.MessageRepository;
 import ru.itis.therapy.repository.UserRepository;
 import ru.itis.therapy.security.service.JWTService;
 
 import java.util.Date;
 import java.util.Optional;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -27,57 +38,117 @@ public class ChatWebsocketController {
     private final JWTService jwtService;
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
+    private final MessageRepository messageRepository;
 
     @MessageMapping("/chat")
-    public void processMessage(@Payload SendMessageRequest request) {
-        // var chatId = chatRoomService
-        //         .getChatId(message.getSenderId(), message.getRecipientId(), true);
-        // message.setChatId(chatId.get());
+    public void processMessage(@Payload MetaMessage metaMessage,
+            SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+        
+        if (metaMessage instanceof UserMessage) {
+            handleUserMessage((UserMessage) metaMessage, simpMessageHeaderAccessor);
+        }
 
-        // ChatMessage saved = chatMessageService.save(message);
-
-        simpMessagingTemplate.convertAndSendToUser(
-                request.getReceiverId().toString(), "/queue/messages",
-                "hello world");
     }
 
-    // @MessageMapping("/chat")
-    // @SendToUser("/queue/reply")
-    // public void processMessage(@Payload SendMessageRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-    //     Long senderId = jwtService.getClaims(token.substring(7)).get("id").asLong();
+    protected void handleUserMessage(UserMessage metaMessage, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+        UserMessage.UserMessageData data = metaMessage.getData();
+        User sender = (User) simpMessageHeaderAccessor.getSessionAttributes().get("sender");
+        Chat chat = (Chat) simpMessageHeaderAccessor.getSessionAttributes().get("chat");
+        User receiver = this.userRepository.findById(data.getReceiverId()).get();
 
-    //     Chat chat;
+        Message message = Message.builder()
+                .chat(chat)
+                .sender(sender)
+                .receiver(receiver)
+                .body(data.getBody())
+                .createdAt(new Date())
+                .build();
 
-    //     Optional<Chat> chatFromDb = chatRepository.findByFirstParticipantIdAndSecondParticipantId(senderId, request.getReceiverId());
+        messageRepository.save(message);
+        metaMessage.getData().setSenderId(sender.getId());
 
-    //     if (chatFromDb.isPresent()) {
-    //         chat = chatFromDb.get();
-    //     } else {
-    //         chatFromDb = chatRepository.findByFirstParticipantIdAndSecondParticipantId(request.getReceiverId(), senderId);
-    //         if (chatFromDb.isPresent()) {
-    //             chat = chatFromDb.get();
-    //         } else {
-    //             chat = Chat.builder()
-    //                     .firstParticipant(userRepository.findById(senderId).get())
-    //                     .secondParticipant(userRepository.findById(request.getReceiverId()).get())
-    //                     .build();
+        simpMessagingTemplate.convertAndSendToUser(
+                data.getFullReceiverId(), "/queue/messages",
+                metaMessage);
+        
+        simpMessagingTemplate.convertAndSendToUser(
+                data.getFullSenderId(), "/queue/messages",
+                metaMessage);
+    }
 
-    //             chatRepository.save(chat);
-    //         }
-    //     }
+    @EventListener
+    public void handleConnectEvent(SessionConnectEvent event) {
+        System.out.println("Subscribed");
+        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        String token = headers.getNativeHeader("Authorization").get(0);
+        Long userId = jwtService.getClaims(token.substring(7)).get("id").asLong();
+        User user = userRepository.findById(userId).get();
 
-    //     Message message = Message.builder()
-    //             .chat(chat)
-    //             .sender(userRepository.findById(senderId).get())
-    //             .receiver(userRepository.findById(request.getReceiverId()).get())
-    //             .body(request.getBody())
-    //             .createdAt(new Date())
-    //             .build();
+        headers.getSessionAttributes().put("sender", user);
+    }
 
-    //     simpMessagingTemplate.convertAndSendToUser(
-    //             request.getReceiverId().toString(),
-    //             "/queue/reply",
-    //             message
-    //     );
-    // }
+    @EventListener
+    public void handleSubscriptionEvent(SessionSubscribeEvent event) {
+        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        Long chatId = this.getChatIdFromDestination(headers.getDestination());
+
+        Long userId = ((User) headers.getSessionAttributes().get("sender")).getId();
+
+        Chat chat = this.chatRepository.findById(chatId).get();
+
+        if ((chat.getFirstParticipant().getId() != userId) && (chat.getSecondParticipant().getId() != userId)) {
+            throw new IllegalArgumentException("This chat can't be accessed by this user");
+        }
+
+        headers.getSessionAttributes().put("chat", chat);
+    }
+
+    private Long getChatIdFromDestination(String destination) {
+        return Long.parseLong(destination.split("/")[2].split("-")[0]);
+    }
 }
+
+// @MessageMapping("/chat")
+// @SendToUser("/queue/reply")
+// public void processMessage(@Payload SendMessageRequest request,
+// @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+// Long senderId = jwtService.getClaims(token.substring(7)).get("id").asLong();
+
+// Chat chat;
+
+// Optional<Chat> chatFromDb =
+// chatRepository.findByFirstParticipantIdAndSecondParticipantId(senderId,
+// request.getReceiverId());
+
+// if (chatFromDb.isPresent()) {
+// chat = chatFromDb.get();
+// } else {
+// chatFromDb =
+// chatRepository.findByFirstParticipantIdAndSecondParticipantId(request.getReceiverId(),
+// senderId);
+// if (chatFromDb.isPresent()) {
+// chat = chatFromDb.get();
+// } else {
+// chat = Chat.builder()
+// .firstParticipant(userRepository.findById(senderId).get())
+// .secondParticipant(userRepository.findById(request.getReceiverId()).get())
+// .build();
+
+// chatRepository.save(chat);
+// }
+// }
+
+// Message message = Message.builder()
+// .chat(chat)
+// .sender(userRepository.findById(senderId).get())
+// .receiver(userRepository.findById(request.getReceiverId()).get())
+// .body(request.getBody())
+// .createdAt(new Date())
+// .build();
+
+// simpMessagingTemplate.convertAndSendToUser(
+// request.getReceiverId().toString(),
+// "/queue/reply",
+// message
+// );
+// }

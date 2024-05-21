@@ -5,6 +5,7 @@ import { apiFetchChats, apiCreateChat } from "@/services/api";
 export const useChatStore = defineStore('chatStore', {
     state: () => ({
         chats: [],
+        messages: [],
         requestData: new RequestData(false, null),
     }),
     actions: {
@@ -32,5 +33,8 @@ export const useChatStore = defineStore('chatStore', {
             this.requestData.stopLoading();
             return null;
         },
+        clearMessages() {
+            this.messages = [];
+        }
     }
 })
