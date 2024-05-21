@@ -49,6 +49,11 @@ export default {
                     authRequired: true,
                 },
                 {
+                    name: "ChatList",
+                    text: "Chats",
+                    authRequired: true,
+                },
+                {
                     name: "Login",
                     text: "Sign in",
                     guestRequired: true,

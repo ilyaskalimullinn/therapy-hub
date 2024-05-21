@@ -94,6 +94,18 @@ export async function apiUpdateSpecialties(specialties) {
     await instance.post("/profile/edit/specialty", specialties).catch(defaultApiExceptionHandler);
 }
 
+export async function apiFetchChats() {
+    const response = await instance.get("/chat/all").catch(defaultApiExceptionHandler);
+    console.log(response.data);
+    return response.data;
+}
+
+export async function apiCreateChat(createChatDto) {
+    const response = await instance.post("/chat/new", createChatDto).catch(defaultApiExceptionHandler);
+    console.log(response.data);
+    return response.data;
+}
+
 function defaultApiExceptionHandler(error) {
     if (error.response) {
         console.error(error.response);

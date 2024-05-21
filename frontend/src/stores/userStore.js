@@ -40,7 +40,7 @@ export const useUserStore = defineStore('userStore', {
                 this.token = token;
                 this.setUser(user);
             } catch (error) {
-                this.setError(error);
+                this.requestData.setError(error);
             }
 
             this.requestData.stopLoading();
@@ -61,7 +61,7 @@ export const useUserStore = defineStore('userStore', {
                 await apiDeleteProfile();
                 this.logout();
             } catch (error) {
-                this.setError(error);
+                this.requestData.setError(error);
             }
 
             this.requestData.stopLoading();
@@ -74,7 +74,7 @@ export const useUserStore = defineStore('userStore', {
                 this.user.specialties = specialties;
                 this.setUser(this.user);
             } catch (error) {
-                this.setError(error);
+                this.requestData.setError(error);
             }
 
 

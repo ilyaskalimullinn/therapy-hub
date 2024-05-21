@@ -13,6 +13,8 @@ import java.util.List;
 @Builder
 public class UserDetailsResponse {
 
+    private Long id;
+
     @JsonProperty("username")
     private String email;
 

@@ -12,6 +12,13 @@ export default {
 <style scoped>
 .submit-button {
     padding: 10px;
-    border-radius: 3px;
+    border-radius: 10px;
+    font-size: 20px;
+    background-color: lightgreen;
+}
+
+.submit-button:active, .submit-button:hover {
+    transition: .2s;
+    opacity: 0.8;
 }
 </style>

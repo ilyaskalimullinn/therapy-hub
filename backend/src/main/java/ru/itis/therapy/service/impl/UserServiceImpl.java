@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
         User user = userOptional.get();
 
         return UserDto.builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .createdAt(user.getCreatedAt())

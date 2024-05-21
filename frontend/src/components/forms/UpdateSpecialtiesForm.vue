@@ -47,6 +47,7 @@ export default {
     },
     async beforeMount() {
         this.ensureLoaded();
+        console.log(this.user);
     },
     methods: {
         ...mapActions(useSpecialtyStore, ['ensureLoaded']),

@@ -1,5 +1,6 @@
 class User {
-    constructor(email, fullName, role, bio, rating, price, specialties) {
+    constructor(id, email, fullName, role, bio, rating, price, specialties) {
+        this.id = id;
         this.email = email;
         this.fullName = fullName;
         this.role = role;
@@ -11,6 +12,7 @@ class User {
 
     static fromMap(map) {
         return new User(
+            map["id"],
             map["email"], 
             map["fullName"], 
             map["role"], 

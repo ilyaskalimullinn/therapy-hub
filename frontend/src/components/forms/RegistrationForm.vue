@@ -15,7 +15,7 @@
 
             <div>
                 <div>
-                    <input type="radio" name="role" id="role-client" value="CLIENT" v-model="this.form.role" checked>
+                    <input type="radio" name="role" id="role-client" value="CLIENT" v-model="this.form.role">
                     <label for="role-client">Client</label>
                 </div>
                 <div>
@@ -60,7 +60,7 @@ export default {
                 fullName: "",
                 password: "",
                 passwordRepeat: "",
-                role: ""
+                role: "CLIENT"
             }
         }
     },

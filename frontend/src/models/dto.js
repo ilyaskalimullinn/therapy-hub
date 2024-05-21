@@ -72,4 +72,10 @@ class CreateReviewDto {
     }
 }
 
-export { RegistrationDto, LoginDto, SearchFilterDto, CreateAppointmentDto, CreateReviewDto };
+class CreateChatDto {
+    constructor(participantId) {
+        this.participantId = participantId
+    }
+}
+
+export { RegistrationDto, LoginDto, SearchFilterDto, CreateAppointmentDto, CreateReviewDto, CreateChatDto };

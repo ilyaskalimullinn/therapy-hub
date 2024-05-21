@@ -19,6 +19,7 @@ import ru.itis.therapy.service.AuthService;
 import ru.itis.therapy.service.UserService;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("${api.uri}/auth")
@@ -50,9 +51,10 @@ public class AuthController {
                                         Double.parseDouble(new DecimalFormat("0.00").format(rating)));
                 }
 
+                userDetailsResponse.setId(user.getId());
                 userDetailsResponse.setSpecialistRating(user.getSpecialistAvgRating());
                 userDetailsResponse.setSpecialistAppointmentPrice(user.getSpecialistAppointmentPrice());
-                userDetailsResponse.setSpecialties(user.getSpecialties());
+                userDetailsResponse.setSpecialties(new ArrayList<>());
         }        
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -69,6 +71,7 @@ public class AuthController {
         UserDto user = userService.getByEmail(loginRequest.getEmail());
 
         UserDetailsResponse userDetailsResponse = UserDetailsResponse.builder()
+                .id(user.getId())
                 .email(loginRequest.getEmail())
                 .fullName(user.getFullName())
                 .role(String.valueOf(user.getRole()))

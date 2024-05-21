@@ -49,4 +49,12 @@ public class RestExceptionHandler {
                         .message(e.getMessage())
                         .build());
     }
+
+    @ExceptionHandler(CantCreateChatException.class)
+    public ResponseEntity<ExceptionResponse> handleCantCreateChatException(CantCreateChatException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(ExceptionResponse.builder()
+                                            .message(e.getMessage())
+                                            .build());
+    }
 }

@@ -2,69 +2,78 @@ package ru.itis.therapy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-import ru.itis.therapy.dto.request.SendMessageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.itis.therapy.dto.request.CreateAppointmentRequest;
+import ru.itis.therapy.dto.request.CreateChatRequest;
+import ru.itis.therapy.dto.response.AppointmentResponse;
+import ru.itis.therapy.dto.response.ChatResponse;
+import ru.itis.therapy.dto.response.CreateChatResponse;
+import ru.itis.therapy.dto.response.ChatResponse.ChatResponseBuilder;
+import ru.itis.therapy.dto.response.ChatResponse.ParticipantInfo;
+import ru.itis.therapy.exception.CantCreateChatException;
 import ru.itis.therapy.model.Chat;
-import ru.itis.therapy.model.Message;
+import ru.itis.therapy.model.User;
+import ru.itis.therapy.model.User.UserRole;
 import ru.itis.therapy.repository.ChatRepository;
 import ru.itis.therapy.repository.UserRepository;
 import ru.itis.therapy.security.service.JWTService;
+import ru.itis.therapy.service.AppointmentService;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("${api.uri}/chat")
 @RequiredArgsConstructor
 public class ChatController {
-
-    private final SimpMessagingTemplate simpMessagingTemplate;
     private final JWTService jwtService;
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
 
-    @MessageMapping("/chat")
-    @SendToUser("/queue/reply")
-    public void processMessage(@Payload SendMessageRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long senderId = jwtService.getClaims(token.substring(7)).get("id").asLong();
+    @PostMapping("/new")
+    public ResponseEntity<CreateChatResponse> create(@RequestBody CreateChatRequest request, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
-        Chat chat;
-
-        Optional<Chat> chatFromDb = chatRepository.findByFirstParticipantIdAndSecondParticipantId(senderId, request.getReceiverId());
-
-        if (chatFromDb.isPresent()) {
-            chat = chatFromDb.get();
-        } else {
-            chatFromDb = chatRepository.findByFirstParticipantIdAndSecondParticipantId(request.getReceiverId(), senderId);
-            if (chatFromDb.isPresent()) {
-                chat = chatFromDb.get();
-            } else {
-                chat = Chat.builder()
-                        .firstParticipant(userRepository.findById(senderId).get())
-                        .secondParticipant(userRepository.findById(request.getReceiverId()).get())
-                        .build();
-
-                chatRepository.save(chat);
-            }
+        User currUser = userRepository.findById(jwtService.getClaims(token.substring(7)).get("id").asLong()).get();
+        if (!currUser.getRole().equals(UserRole.CLIENT)) {
+            throw new CantCreateChatException();
         }
 
-        Message message = Message.builder()
-                .chat(chat)
-                .sender(userRepository.findById(senderId).get())
-                .receiver(userRepository.findById(request.getReceiverId()).get())
-                .body(request.getBody())
-                .createdAt(new Date())
-                .build();
+        User participant = userRepository.findById(request.getParticipantId()).get();
+        if (!participant.getRole().equals(UserRole.SPECIALIST)) {
+            throw new CantCreateChatException();
+        }
 
-        simpMessagingTemplate.convertAndSendToUser(
-                request.getReceiverId().toString(),
-                "/queue/reply",
-                message
-        );
+        Chat chat = Chat.builder()
+            .firstParticipant(currUser)
+            .secondParticipant(participant)
+            .build();
+        Chat createdChat = chatRepository.save(chat);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(CreateChatResponse.builder()
+                                                            .chatId(createdChat.getId())
+                                                            .build());
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ChatResponse>> getAll(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        List<ChatResponse> chats = chatRepository.findAllWhereFirstParticipantIdEqualsOrSecondParticipantIdEquals(jwtService.getClaims(token.substring(7)).get("id").asLong())
+        .stream().map(c -> {
+            ChatResponse response = new ChatResponse();
+            response.setId(c.getId());
+            User participant;
+            if (c.getFirstParticipant().getId().equals(jwtService.getClaims(token.substring(7)).get("id").asLong())) {
+                participant = c.getSecondParticipant();
+            } else {
+                participant = c.getFirstParticipant();
+            }
+            response.setParticipant(ParticipantInfo.builder()
+                                    .id(participant.getId())
+                                    .fullName(participant.getFullName())
+                                    .build());
+            return response;
+        }).toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(chats);
     }
 }

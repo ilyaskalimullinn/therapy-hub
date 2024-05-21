@@ -9,6 +9,8 @@ import SpecialistSearchView from '@/views/SpecialistSearchView.vue'
 import SpecialistView from '@/views/SpecialistView.vue'
 import AppointmentListView from '@/views/AppointmentListView.vue'
 import ReviewsView from '@/views/ReviewsView.vue'
+import ChatView from '@/views/ChatView.vue'
+import ChatListView from '@/views/ChatListView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,6 +91,29 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: "/chat",
+      redirect: { name: 'Home' },
+      children: [
+        {
+          path: "/all",
+          name: "ChatList",
+          component: ChatListView,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: ":id",
+          name: "Chat",
+          component: ChatView,
+          meta: {
+            requiresAuth: true
+          }
+        }
+      ]
+      
     },
     
   ]

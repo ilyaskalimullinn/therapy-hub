@@ -28,9 +28,12 @@
 
             </div>
 
+            <StartChatForm :participantId="parseInt($route.params.id)" v-if="user.role === 'CLIENT'" />
+            
             <CreateAppointmentForm :specialistId="parseInt($route.params.id)" v-if="user.role === 'CLIENT'" />
 
-            <CreateReviewForm :specialistId="parseInt($route.params.id)" v-if="user.role === 'CLIENT' && !hasAlreadyWrittenReview" />
+            <CreateReviewForm :specialistId="parseInt($route.params.id)"
+                v-if="user.role === 'CLIENT' && !hasAlreadyWrittenReview" />
         </div>
     </MainLayout>
 </template>
@@ -45,10 +48,11 @@ import { mapActions, mapState } from "pinia";
 import DefaultLoader from "../components/utils/DefaultLoader.vue";
 import CreateAppointmentForm from "../components/forms/CreateAppointmentForm.vue";
 import CreateReviewForm from "../components/forms/CreateReviewForm.vue";
+import StartChatForm from "../components/forms/StartChatForm.vue";
 
 export default {
     name: "SpecialistView",
-    components: { MainLayout, DefaultLoader, CreateAppointmentForm, ReviewBlock, CreateReviewForm },
+    components: { MainLayout, DefaultLoader, CreateAppointmentForm, ReviewBlock, CreateReviewForm, StartChatForm },
     async beforeMount() {
         this.fetchSpecialist(this.$route.params.id);
     },
