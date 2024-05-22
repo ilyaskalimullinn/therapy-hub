@@ -90,8 +90,8 @@ export async function apiDeleteProfile() {
     await instance.post("/profile/edit/delete").catch(defaultApiExceptionHandler);
 }
 
-export async function apiUpdateSpecialties(specialties) {
-    await instance.post("/profile/edit/specialty", specialties).catch(defaultApiExceptionHandler);
+export async function apiUpdateProfile(updateProfileDto) {
+    await instance.post("/profile/edit", updateProfileDto).catch(defaultApiExceptionHandler);
 }
 
 export async function apiFetchChats() {

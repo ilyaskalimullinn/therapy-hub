@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import ru.itis.therapy.dto.request.EditProfileRequest;
+import ru.itis.therapy.model.User;
 import ru.itis.therapy.security.service.JWTService;
 import ru.itis.therapy.service.SpecialistService;
 import ru.itis.therapy.service.UserService;
@@ -19,9 +22,14 @@ public class ProfileController {
     private final SpecialistService specialistService;
     private final UserService userService;
 
-    @PostMapping("/edit/specialty")
-    public ResponseEntity<Void> editSpecialties(@RequestBody List<Long> specialties, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        specialistService.editSpecialties(specialties, jwtService.getClaims(token.substring(7)).get("id").asLong());
+    @PostMapping("/edit")
+    public ResponseEntity<Void> edit(@RequestBody EditProfileRequest editProfileRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        User user = userService.findById(jwtService.getClaims(token.substring(7)).get("id").asLong()).get();
+        userService.editProfile(editProfileRequest, user);
+
+        if (user.getRole().equals(User.UserRole.SPECIALIST)) {
+            specialistService.editProfile(editProfileRequest, user);
+        }
 
         return ResponseEntity.ok().build();
     }

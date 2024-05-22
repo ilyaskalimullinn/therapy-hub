@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.itis.therapy.dto.UserDto;
+import ru.itis.therapy.dto.request.EditProfileRequest;
 import ru.itis.therapy.exception.UserAlreadyExistsException;
 import ru.itis.therapy.exception.UserNotFoundException;
 import ru.itis.therapy.model.User;
@@ -57,4 +58,16 @@ public class UserServiceImpl implements UserService {
     public void deleteAccount(Long userId) {
         userRepository.delete(userRepository.findById(userId).get());
     }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public void editProfile(EditProfileRequest editProfileRequest, User user) {
+        user.setFullName(editProfileRequest.getFullName());
+        this.userRepository.save(user);
+    }
+    
 }

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { apiLogin, apiRegister, apiDeleteProfile, apiUpdateSpecialties } from "../services/api.js";
+import { apiLogin, apiRegister, apiDeleteProfile, apiUpdateProfile } from "../services/api.js";
 import {
     clearTokenInStorage,
     clearUserInStorage,
@@ -66,12 +66,17 @@ export const useUserStore = defineStore('userStore', {
 
             this.requestData.stopLoading();
         },
-        async updateSpecialties(specialties) {
+        async updateProfile(updateProfileDto, specialties) {
             this.requestData.startLoading();
 
             try {
-                await apiUpdateSpecialties(specialties.map(specialty => specialty.id));
+                await apiUpdateProfile(updateProfileDto);
+
+                this.user.fullName = updateProfileDto.fullName;
                 this.user.specialties = specialties;
+                this.user.bio = updateProfileDto.bio;
+                this.user.price = updateProfileDto.price;
+
                 this.setUser(this.user);
             } catch (error) {
                 this.requestData.setError(error);

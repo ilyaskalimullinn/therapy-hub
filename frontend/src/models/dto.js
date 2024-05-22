@@ -78,4 +78,30 @@ class CreateChatDto {
     }
 }
 
-export { RegistrationDto, LoginDto, SearchFilterDto, CreateAppointmentDto, CreateReviewDto, CreateChatDto };
+class UpdateProfileDto {
+    constructor(fullName, bio, price, specialties) {
+        this.fullName = fullName;
+        this.bio = bio;
+        this.price = price;
+        this.specialties = specialties;
+    }
+
+    static fromForm(form) {
+        if (form.specialist.bio === null) {
+            return new UpdateProfileDto(
+                form.common.fullName,
+                null,
+                null,
+                null
+            ); 
+        }
+        return new UpdateProfileDto(
+            form.common.fullName, 
+            form?.specialist.bio, 
+            form?.specialist.price, 
+            form?.specialist.specialties.map(s => s.id)
+        );
+    }
+}
+
+export { RegistrationDto, LoginDto, SearchFilterDto, CreateAppointmentDto, CreateReviewDto, CreateChatDto, UpdateProfileDto };

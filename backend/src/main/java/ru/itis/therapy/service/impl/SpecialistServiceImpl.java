@@ -2,6 +2,8 @@ package ru.itis.therapy.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import ru.itis.therapy.dto.request.EditProfileRequest;
 import ru.itis.therapy.dto.request.SearchSpecialistRequest;
 import ru.itis.therapy.exception.SpecialistNotFoundException;
 import ru.itis.therapy.exception.SpecialtyNotFoundException;
@@ -41,7 +43,7 @@ public class SpecialistServiceImpl implements SpecialistService {
     }
 
     @Override
-    public void editSpecialties(List<Long> specialties, Long specialistId) {
+    public void editSpecialties(List<Long> specialties, User specialist) {
         List<Specialty> newSpecialties = new ArrayList<>();
 
         for (Long specialtyId : specialties) {
@@ -54,9 +56,16 @@ public class SpecialistServiceImpl implements SpecialistService {
             newSpecialties.add(specialtyOptional.get());
         }
 
-        User specialist = userRepository.findById(specialistId).get();
         specialist.setSpecialties(newSpecialties);
 
         userRepository.save(specialist);
+    }
+
+    @Override
+    public void editProfile(EditProfileRequest editProfileRequest, User specialist) {
+        specialist.setSpecialistAppointmentPrice(editProfileRequest.getPrice());
+        specialist.setSpecialistBio(editProfileRequest.getBio());
+        
+        this.editSpecialties(editProfileRequest.getSpecialties(), specialist);
     }
 }
