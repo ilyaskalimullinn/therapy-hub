@@ -1,6 +1,8 @@
 <template>
-    <div :class='`message ${this.getClass}`' >
-        {{ message.body }}
+    <div :class='`message ${this.getClass}`'>
+        <div :class="`message-inner ${this.getClass}`">
+            {{ message.body }}
+        </div>
     </div>
 </template>
 
@@ -28,15 +30,26 @@ export default {
 </script>
 
 <style scoped>
-.message {
+.message-inner {
     border: 1px solid black;
+    padding: 10px;
+    font-size: 15px;
+    width: 60%;
 }
 
-.mine {
+.message .mine {
+    text-align: right;
+}
+
+.message .other {
+    text-align: left;
+}
+
+.message-inner.mine {
     background-color: lightgreen;
 }
 
-.other {
+.message-inner.other {
     background-color: lightblue;
 }
 </style>

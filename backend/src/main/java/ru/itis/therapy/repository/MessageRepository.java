@@ -8,5 +8,5 @@ import ru.itis.therapy.model.Message;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    List<Message> findAllByChatId(Long chatId);
+    List<Message> findAllByChatIdOrderByCreatedAtAsc(Long chatId);
 }

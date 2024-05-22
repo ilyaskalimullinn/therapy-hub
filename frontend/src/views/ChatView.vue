@@ -1,18 +1,20 @@
 <template>
     <MainLayout>
         <h1>Чат</h1>
-        <h2 v-if="participant !== null">Вы общаетесь с пользователем {{ participant.fullName }}</h2>
 
-        <div class="messages">
-            <MessageBlock :message="message" v-for="message in messages" v-bind:key="message.id" />
+        <div class="wrapper">
+            <h2 v-if="participant !== null">Вы общаетесь с пользователем {{ participant.fullName }}</h2>
+            <div class="messages">
+                <MessageBlock :message="message" v-for="message in messages" v-bind:key="message.id" />
+            </div>
+
+            <form action="" @submit.prevent="submit()">
+                <label for="message-body">Message: </label>
+                <input type="text" name="message" v-model="messageBody" id="message-body">
+
+                <input type="submit" value="Send" />
+            </form>
         </div>
-
-        <form action="" @submit.prevent="submit()">
-            <label for="message-body">Message: </label>
-            <input type="text" name="message" v-model="messageBody" id="message-body">
-
-            <input type="submit" value="Send" />
-        </form>
 
     </MainLayout>
 </template>
@@ -48,3 +50,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+.wrapper {
+    margin: 0 auto;
+    width: 70%;
+}
+</style>

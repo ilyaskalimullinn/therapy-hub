@@ -59,7 +59,7 @@ public class ChatWebsocketController {
     private void handleGetPreviousMessage(GetPreviousMessage metaMessage,
             SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
 
-        List<Message> messages = this.messageRepository.findAllByChatId(metaMessage.getData().getChatId());
+        List<Message> messages = this.messageRepository.findAllByChatIdOrderByCreatedAtAsc(metaMessage.getData().getChatId());
         Chat chat = (Chat) simpMessageHeaderAccessor.getSessionAttributes().get("chat");
 
         List<UserMessageData> userMessageDataList = messages
