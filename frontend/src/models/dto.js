@@ -42,7 +42,7 @@ class SearchFilterDto {
                 min: null
             },
             minRating: null,
-            specialtyList: []
+            specialties: []
         };
         this.order = {
             by: "rating",

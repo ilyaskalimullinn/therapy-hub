@@ -81,7 +81,7 @@
             <div class="specialtyList" v-else>
                 <div class="specialty" v-for="specialty in specialtyList" v-bind:key="specialty.id">
                     <label :for="`specialty-${specialty.id}`">{{ specialty.name }}</label>
-                    <input type="checkbox" name="specialtyList" :value="specialty.id" v-model="form.filterParams.specialtyList" :id="`specialty-${specialty.id}`">
+                    <input type="checkbox" name="specialtyList" :value="specialty.id" v-model="form.filterParams.specialties" :id="`specialty-${specialty.id}`">
                 </div>
             </div>
         </div>
